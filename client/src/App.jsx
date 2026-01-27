@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Note from './Note';
 import Sidebar from './Sidebar';
+import SendCompose from './SendCompose';
+import SendView from './SendView';
 
 function useTheme() {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
@@ -88,6 +90,24 @@ function AppContent() {
                 onToggleTheme={toggleTheme}
                 isHomePage={false}
                 isAboutPage={true}
+              />
+            } 
+          />
+          <Route 
+            path="/send" 
+            element={
+              <SendCompose 
+                theme={theme}
+                onToggleTheme={toggleTheme}
+              />
+            } 
+          />
+          <Route 
+            path="/send/:uuid" 
+            element={
+              <SendView 
+                theme={theme}
+                onToggleTheme={toggleTheme}
               />
             } 
           />

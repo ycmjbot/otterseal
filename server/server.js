@@ -6,6 +6,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +24,16 @@ log(`Starting server... Node version: ${process.version}`);
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  // No-cache for /send/ routes
+  if (req.path.startsWith('/send/') || req.path.startsWith('/api/send')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  }
+  next();
+});
 
 // Limits
 const MAX_ID_LENGTH = 64; // SHA-256 hex length
@@ -43,17 +54,138 @@ try {
       content TEXT
     )
   `);
+  
+  // Migration: Add expires_at and burn_after_reading columns if they don't exist
+  try {
+    db.exec(`ALTER TABLE notes ADD COLUMN expires_at INTEGER`);
+    log('Added expires_at column');
+  } catch (e) {
+    // Column already exists
+  }
+  try {
+    db.exec(`ALTER TABLE notes ADD COLUMN burn_after_reading INTEGER DEFAULT 0`);
+    log('Added burn_after_reading column');
+  } catch (e) {
+    // Column already exists
+  }
+  
   log('Database initialized successfully');
 } catch (e) {
   log(`Database initialization failed: ${e.message}\n${e.stack}`);
   process.exit(1);
 }
 
-const getNote = db.prepare('SELECT content FROM notes WHERE id = ?');
+const getNote = db.prepare('SELECT content, expires_at, burn_after_reading FROM notes WHERE id = ?');
+const getNoteMetadata = db.prepare('SELECT expires_at, burn_after_reading FROM notes WHERE id = ?');
 const upsertNote = db.prepare(`
-  INSERT INTO notes (id, content) VALUES (?, ?)
-  ON CONFLICT(id) DO UPDATE SET content = excluded.content
+  INSERT INTO notes (id, content, expires_at, burn_after_reading) VALUES (?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET content = excluded.content, expires_at = excluded.expires_at, burn_after_reading = excluded.burn_after_reading
 `);
+const deleteNote = db.prepare('DELETE FROM notes WHERE id = ?');
+const deleteExpiredNotes = db.prepare('DELETE FROM notes WHERE expires_at IS NOT NULL AND expires_at < ?');
+
+// Cleanup expired notes every minute
+setInterval(() => {
+  try {
+    const result = deleteExpiredNotes.run(Date.now());
+    if (result.changes > 0) {
+      log(`Cleaned up ${result.changes} expired notes`);
+    }
+  } catch (e) {
+    log(`Cleanup error: ${e.message}`);
+  }
+}, 60 * 1000);
+
+// Helper: Check if note is expired
+function isExpired(note) {
+  return note.expires_at && note.expires_at < Date.now();
+}
+
+// REST API for Send feature
+// GET /api/notes/:id - Get note content (with optional peek mode)
+app.get('/api/notes/:id', (req, res) => {
+  const { id } = req.params;
+  const peek = req.query.peek === '1';
+  
+  if (!id || id.length > MAX_ID_LENGTH) {
+    return res.status(400).json({ error: 'Invalid ID' });
+  }
+  
+  try {
+    if (peek) {
+      // Metadata only - don't return content, don't delete
+      const note = getNoteMetadata.get(id);
+      if (!note) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      if (isExpired(note)) {
+        deleteNote.run(id);
+        return res.status(410).json({ error: 'Expired' });
+      }
+      return res.json({
+        exists: true,
+        expiresAt: note.expires_at,
+        burnAfterReading: note.burn_after_reading === 1
+      });
+    } else {
+      // Full content - may delete if burn_after_reading
+      const note = getNote.get(id);
+      if (!note) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      if (isExpired(note)) {
+        deleteNote.run(id);
+        return res.status(410).json({ error: 'Expired' });
+      }
+      
+      const response = {
+        content: note.content,
+        expiresAt: note.expires_at,
+        burnAfterReading: note.burn_after_reading === 1
+      };
+      
+      // Burn after reading: delete immediately after returning
+      if (note.burn_after_reading === 1) {
+        deleteNote.run(id);
+        log(`Burned note ${id.substring(0, 8)}...`);
+      }
+      
+      return res.json(response);
+    }
+  } catch (e) {
+    log(`API error: ${e.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/notes/:id - Create/update note
+app.post('/api/notes/:id', (req, res) => {
+  const { id } = req.params;
+  const { content, expiresAt, burnAfterReading } = req.body;
+  
+  if (!id || id.length > MAX_ID_LENGTH) {
+    return res.status(400).json({ error: 'Invalid ID' });
+  }
+  if (!content || typeof content !== 'string') {
+    return res.status(400).json({ error: 'Content required' });
+  }
+  if (content.length > MAX_CONTENT_LENGTH) {
+    return res.status(400).json({ error: 'Content too large (max 100KB)' });
+  }
+  
+  try {
+    upsertNote.run(
+      id,
+      content,
+      expiresAt || null,
+      burnAfterReading ? 1 : 0
+    );
+    return res.json({ success: true });
+  } catch (e) {
+    log(`API error: ${e.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Serve static files from the client build directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -94,9 +226,13 @@ wss.on('connection', (ws, req) => {
 
   // Send current state
   const note = getNote.get(id);
-  if (note) {
+  if (note && !isExpired(note)) {
     ws.send(JSON.stringify({ type: 'init', content: note.content }));
   } else {
+    // Delete if expired
+    if (note && isExpired(note)) {
+      deleteNote.run(id);
+    }
     ws.send(JSON.stringify({ type: 'init', content: '' }));
   }
 
@@ -112,7 +248,14 @@ wss.on('connection', (ws, req) => {
         }
 
         // Persistence (Last-Writer-Wins)
-        upsertNote.run(id, data.content);
+        // For WebSocket updates, preserve existing expiry/burn settings or use defaults
+        const existing = getNoteMetadata.get(id);
+        upsertNote.run(
+          id,
+          data.content,
+          existing?.expires_at || null,
+          existing?.burn_after_reading || 0
+        );
         
         // Broadcast
         broadcast(id, ws, { type: 'update', content: data.content });
