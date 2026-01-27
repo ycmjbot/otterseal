@@ -154,6 +154,13 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
   
   const navigate = useNavigate();
 
+  const [debouncedTitle, setDebouncedTitle] = useState(rawTitle);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedTitle(rawTitle), 300);
+    return () => clearTimeout(timer);
+  }, [rawTitle]);
+
   const [content, setContent] = useState(null); 
   const [remoteContent, setRemoteContent] = useState(null);
   const [status, setStatus] = useState(isSpecialPage ? 'static' : 'connecting');
@@ -163,12 +170,21 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
   const timeoutRef = useRef(null);
   const lastContentRef = useRef(""); 
 
-  async function saveNow() {
+  // Immediate state reset on raw title change
+  useEffect(() => {
+    if (!isSpecialPage) {
+      setContent(null);
+      setStatus(null); // Show nothing during transition
+    }
+  }, [rawTitle, isSpecialPage]);
+
+  async function saveNow(expectedTitle) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
 
+    if (debouncedTitle !== expectedTitle) return;
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !key) return;
     
     try {
@@ -184,7 +200,7 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
   }
 
   useEffect(() => {
-    if (isSpecialPage || !rawTitle) return;
+    if (isSpecialPage || !debouncedTitle) return;
     
     // Reset state on title change
     setContent(null);
@@ -195,7 +211,8 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     // Cleanup old WS
     if (wsRef.current) {
         // Force save any pending changes before closing
-        if (timeoutRef.current) saveNow();
+        if (timeoutRef.current) saveNow(debouncedTitle);
+        wsRef.current.onclose = null; // Prevent "Offline" flash
         wsRef.current.close();
         wsRef.current = null;
     }
@@ -203,12 +220,12 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     let active = true;
 
     async function init() {
-        const id = await hashTitle(rawTitle);
-        const k = await deriveKey(rawTitle);
+        const id = await hashTitle(debouncedTitle);
+        const k = await deriveKey(debouncedTitle);
         if (!active) return;
         
         setKey(k);
-        connectWS(id, k);
+        connectWS(id, k, debouncedTitle);
     }
 
     init();
@@ -216,12 +233,13 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     return () => {
         active = false;
         if (wsRef.current) {
-          if (timeoutRef.current) saveNow();
+          if (timeoutRef.current) saveNow(debouncedTitle);
+          wsRef.current.onclose = null;
           wsRef.current.close();
           wsRef.current = null;
         }
     };
-  }, [rawTitle, isSpecialPage]);
+  }, [debouncedTitle, isSpecialPage]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -234,7 +252,7 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
-  function connectWS(id, k) {
+  function connectWS(id, k, currentTitle) {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host; 
     const wsUrl = `${protocol}//${host}?id=${id}`;
@@ -276,8 +294,8 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     ws.onclose = () => {
       setStatus('error');
       setTimeout(() => {
-        if (wsRef.current?.readyState === WebSocket.CLOSED && window.location.pathname.includes(encodeURIComponent(rawTitle))) {
-           connectWS(id, k);
+        if (wsRef.current?.readyState === WebSocket.CLOSED && window.location.pathname.includes(encodeURIComponent(currentTitle))) {
+           connectWS(id, k, currentTitle);
         }
       }, 3000);
     };
@@ -292,7 +310,7 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
     timeoutRef.current = setTimeout(() => {
-      saveNow();
+      saveNow(debouncedTitle);
     }, 500);
   };
 
@@ -391,7 +409,7 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
          {isAbout && <AboutContent />}
          {!isSpecialPage && (
            <Editor 
-              key={rawTitle}
+              key={debouncedTitle}
               initialContent={content} 
               onChange={handleChange}
               remoteContent={remoteContent}
