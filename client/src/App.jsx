@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Home from './Home';
-import About from './About';
 import Note from './Note';
 import Sidebar from './Sidebar';
 
@@ -66,8 +64,32 @@ function AppContent() {
       
       <div className="flex-1 flex flex-col min-h-screen">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route 
+            path="/" 
+            element={
+              <Note 
+                isStarred={isStarred}
+                onToggleStar={toggleStar}
+                onOpenSidebar={() => setSidebarOpen(true)}
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                isHomePage={true}
+              />
+            } 
+          />
+          <Route 
+            path="/about" 
+            element={
+              <Note 
+                isStarred={isStarred}
+                onToggleStar={toggleStar}
+                onOpenSidebar={() => setSidebarOpen(true)}
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                isHomePage={false}
+              />
+            } 
+          />
           <Route 
             path="/:title" 
             element={

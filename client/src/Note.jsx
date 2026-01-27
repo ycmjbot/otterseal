@@ -178,6 +178,23 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
     }
   }, [rawTitle, isSpecialPage]);
 
+  // Check if Lexical content is empty (no text)
+  function isContentEmpty(jsonStr) {
+    if (!jsonStr) return true;
+    try {
+      const data = JSON.parse(jsonStr);
+      // Recursively check if there's any actual text
+      const hasText = (node) => {
+        if (node.text && node.text.trim()) return true;
+        if (node.children) return node.children.some(hasText);
+        return false;
+      };
+      return !hasText(data.root);
+    } catch {
+      return !jsonStr.trim();
+    }
+  }
+
   async function saveNow(expectedTitle) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -186,6 +203,12 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
 
     if (debouncedTitle !== expectedTitle) return;
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !key) return;
+    
+    // Don't save empty content - no point wasting space
+    if (isContentEmpty(lastContentRef.current)) {
+      setStatus('saved');
+      return;
+    }
     
     try {
       const encrypted = await encryptNote(lastContentRef.current, key);
