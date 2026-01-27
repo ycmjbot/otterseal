@@ -99,6 +99,7 @@ function AppContent() {
               <SendCompose 
                 theme={theme}
                 onToggleTheme={toggleTheme}
+                onOpenSidebar={() => setSidebarOpen(true)}
               />
             } 
           />
@@ -108,6 +109,7 @@ function AppContent() {
               <SendView 
                 theme={theme}
                 onToggleTheme={toggleTheme}
+                onOpenSidebar={() => setSidebarOpen(true)}
               />
             } 
           />

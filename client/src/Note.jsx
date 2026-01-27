@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { hashTitle, deriveKey, encryptNote, decryptNote } from './cryptoUtils';
-import { Loader2, Check, WifiOff, Star, Moon, Sun, Lock, Shield, Zap, Sparkles, ArrowRight, Github } from 'lucide-react';
+import { Loader2, Check, WifiOff, Star, Moon, Sun, Lock, Shield, Zap, Sparkles, ArrowRight, Github, Send, Flame, Clock } from 'lucide-react';
 import Editor from './Editor';
 import clsx from 'clsx';
 
 // Static content for special pages
 function HomeContent({ onNavigate }) {
   const [inputTitle, setInputTitle] = useState('');
+  const navigate = useNavigate();
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,68 +24,84 @@ function HomeContent({ onNavigate }) {
   };
 
   return (
-    <div className="max-w-xl mx-auto space-y-8 text-center py-8">
-      <div className="space-y-4">
-        <div className="flex justify-center">
-          <div className="p-4 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl">
-            <Lock className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+      <div className="max-w-xl w-full space-y-8 text-center py-8">
+        <div className="space-y-4">
+          <div className="flex justify-center">
+            <div className="p-4 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl">
+              <Lock className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
+            </div>
           </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            Welcome to SecurePad
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Zero-knowledge encrypted notes. No signup. No passwords.<br />
+            Just type a title and start writing.
+          </p>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-          Welcome to SecurePad
-        </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Zero-knowledge encrypted notes. No signup. No passwords.<br />
-          Just type a title and start writing.
-        </p>
-      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="note-title-home"
-          autoComplete="off"
-          spellCheck="false"
-          value={inputTitle}
-          onChange={(e) => setInputTitle(e.target.value)}
-          placeholder="Enter a note title..."
-          className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
-        />
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={!inputTitle.trim()}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
-          >
-            Open Note
-            <ArrowRight className="w-5 h-5" />
-          </button>
-          <button
-            type="button"
-            onClick={handleRandom}
-            className="px-6 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors flex items-center gap-2"
-          >
-            <Sparkles className="w-5 h-5" />
-            Random
-          </button>
-        </div>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="note-title-home"
+            autoComplete="off"
+            spellCheck="false"
+            value={inputTitle}
+            onChange={(e) => setInputTitle(e.target.value)}
+            placeholder="Enter a note title..."
+            className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
+          />
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={!inputTitle.trim()}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
+            >
+              Open Note
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleRandom}
+              className="px-6 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors flex items-center gap-2"
+            >
+              <Sparkles className="w-5 h-5" />
+              Random
+            </button>
+          </div>
+        </form>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
-          <Shield className="w-6 h-6 text-green-500 mb-2" />
-          <h3 className="font-semibold text-gray-900 dark:text-white">End-to-End Encrypted</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">AES-256 encryption. Server never sees your content.</p>
+        {/* Send a Secret CTA */}
+        <div className="pt-2">
+          <button
+            onClick={() => navigate('/send')}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+          >
+            <Send className="w-5 h-5" />
+            Send a One-Time Secret
+          </button>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Share an encrypted, self-destructing message
+          </p>
         </div>
-        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
-          <Zap className="w-6 h-6 text-yellow-500 mb-2" />
-          <h3 className="font-semibold text-gray-900 dark:text-white">Real-Time Sync</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Share the title. Collaborate instantly.</p>
-        </div>
-        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
-          <Lock className="w-6 h-6 text-indigo-500 mb-2" />
-          <h3 className="font-semibold text-gray-900 dark:text-white">Zero Knowledge</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Title = password. We can't recover it.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
+            <Shield className="w-6 h-6 text-green-500 mb-2" />
+            <h3 className="font-semibold text-gray-900 dark:text-white">End-to-End Encrypted</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">AES-256 encryption. Server never sees your content.</p>
+          </div>
+          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
+            <Zap className="w-6 h-6 text-yellow-500 mb-2" />
+            <h3 className="font-semibold text-gray-900 dark:text-white">Real-Time Sync</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Share the title. Collaborate instantly.</p>
+          </div>
+          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
+            <Lock className="w-6 h-6 text-indigo-500 mb-2" />
+            <h3 className="font-semibold text-gray-900 dark:text-white">Zero Knowledge</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Title = password. We can't recover it.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -92,48 +109,68 @@ function HomeContent({ onNavigate }) {
 }
 
 function AboutContent() {
+  const navigate = useNavigate();
+  
   return (
-    <div className="max-w-2xl mx-auto py-8 prose dark:prose-invert">
-      <div className="flex items-center gap-3 mb-6 not-prose">
-        <Lock className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white m-0">How SecurePad Works</h2>
+    <div className="flex flex-col items-center justify-center">
+      <div className="max-w-2xl w-full py-8 prose dark:prose-invert">
+        <div className="flex items-center gap-3 mb-6 not-prose">
+          <Lock className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white m-0">How SecurePad Works</h2>
+        </div>
+        <p className="lead">Zero-knowledge encryption for notes and secrets.</p>
+
+        <h3>📝 Encrypted Notes</h3>
+        <p>
+          Create instant, encrypted notes just by typing a title. 
+          No signups, no passwords, no databases storing your raw text.
+        </p>
+        <ul>
+          <li><strong>Title = Password:</strong> Your note title is used to derive the encryption key.</li>
+          <li><strong>Real-Time Sync:</strong> Share the title with others to collaborate instantly.</li>
+          <li><strong>Zero Knowledge:</strong> The server only stores encrypted blobs — we can't read your notes.</li>
+        </ul>
+
+        <h3>🔐 Send a Secret</h3>
+        <p>
+          Need to share a password, API key, or sensitive message? Use <strong>Send</strong> to create 
+          a one-time, self-destructing secret link.
+        </p>
+        <ul>
+          <li><strong>Expiring Links:</strong> Set secrets to expire after 1 hour, 1 day, 7 days, or 30 days.</li>
+          <li><strong>Burn After Reading:</strong> Optionally delete the secret after it's opened once.</li>
+          <li><strong>Shareable URL:</strong> The decryption key is embedded in the link — only people with the link can read it.</li>
+        </ul>
+        
+        <div className="not-prose my-6">
+          <button
+            onClick={() => navigate('/send')}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all"
+          >
+            <Send className="w-5 h-5" />
+            Try Send a Secret
+          </button>
+        </div>
+
+        <h3>🔧 The Geeky Stuff</h3>
+        <ul>
+          <li>
+            <strong>ID Hashing:</strong> Titles are hashed using <code>SHA-256</code>. 
+            The server only sees this hash, never the real title.
+          </li>
+          <li>
+            <strong>Client-Side Encryption:</strong> Content is encrypted in your browser using <code>AES-256-GCM</code>.
+          </li>
+          <li>
+            <strong>No Server Decryption:</strong> The server receives only encrypted blobs and cannot recover your data.
+          </li>
+        </ul>
+        
+        <hr />
+        <p className="text-sm text-gray-500 text-center">
+          Built with ❤️ by <strong>JBot</strong> • v1.1.0
+        </p>
       </div>
-      <p className="lead">Zero-knowledge, real-time collaboration.</p>
-
-      <h3>The Concept</h3>
-      <p>
-        SecurePad allows you to create instant, encrypted notes just by navigating to a URL. 
-        No signups, no passwords, no databases storing your raw text.
-      </p>
-
-      <h3>Encryption (The Geeky Stuff)</h3>
-      <ul>
-        <li>
-          <strong>ID Hashing:</strong> The title of your note is hashed using <code>SHA-256</code>. 
-          The server only sees this hash, so it never knows the real title.
-        </li>
-        <li>
-          <strong>Client-Side Encryption:</strong> Your content is encrypted in your browser using <code>AES-256-GCM</code>. 
-          The encryption key is derived from the note title itself.
-        </li>
-        <li>
-          <strong>Zero Knowledge:</strong> The server receives only encrypted blobs. 
-          It cannot read your notes, and it cannot recover them if you forget the title.
-        </li>
-      </ul>
-
-      <h3>Inspiration & Credits</h3>
-      <p>
-        This project is heavily inspired by the simplicity of{' '}
-        <a href="https://github.com/routman/publicnote.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1">
-          publicnote.com <Github className="w-3 h-3"/>
-        </a>.
-      </p>
-      
-      <hr />
-      <p className="text-sm text-gray-500 text-center">
-        Built with ❤️ by <strong>JBot</strong> • v1.0.0
-      </p>
     </div>
   );
 }

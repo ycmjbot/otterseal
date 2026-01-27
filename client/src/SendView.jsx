@@ -3,7 +3,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { hashTitle, deriveKey, decryptNote } from './cryptoUtils';
 import { Mail, MailOpen, Copy, Check, Clock, Flame, AlertTriangle, XCircle, Moon, Sun, Send, ArrowLeft } from 'lucide-react';
 
-export default function SendView({ theme, onToggleTheme }) {
+export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
   const { uuid } = useParams();
   const [searchParams] = useSearchParams();
   const isCreator = searchParams.get('created') === '1';
@@ -107,15 +107,21 @@ export default function SendView({ theme, onToggleTheme }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 transition-colors">
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm">
+    <div className="flex-1 flex flex-col">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <Link to="/send" className="p-2 -ml-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <button onClick={onOpenSidebar} className="p-2 -ml-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors lg:hidden">
+            <span className="sr-only">Menu</span>
+            <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <Link to="/send" className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           </Link>
           <div>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white">Secret Message</h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Encrypted, one-time share</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Encrypted, one-time share</p>
           </div>
         </div>
         <button 
