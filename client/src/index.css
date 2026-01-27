@@ -1,13 +1,24 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+/* Tailwind 4 CSS-based theme config */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
 }
 
-.dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+/* Dark mode variant using class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --background: var(--color-background);
+    --foreground: var(--color-foreground);
+  }
+
+  .dark {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+  }
 }
 
 body {
