@@ -148,8 +148,8 @@ export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, on
   const isSpecialPage = isHome || isAbout;
   
   // Display title
-  const title = isHome ? '' : rawTitle;
-  const displayTitle = isHome ? 'Home' : rawTitle;
+  const title = isHome ? '' : (isAbout ? 'About' : rawTitle);
+  const displayTitle = isHome ? 'Home' : (isAbout ? 'About' : rawTitle);
   const placeholderTitle = isHome ? 'Home Page' : '';
   
   const navigate = useNavigate();
