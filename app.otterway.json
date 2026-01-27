@@ -1,0 +1,19 @@
+{
+  "name": "securepad",
+  "type": "container",
+  "description": "SecurePad - Zero-Knowledge Encrypted Notepad",
+  "domain": "securepad.jbot.ycmjason.com",
+  "port": 3000,
+  "internalPort": 3000,
+  "resources": {
+    "cpus": "0.5",
+    "memory": "256m",
+    "pidsLimit": 100
+  },
+  "volumes": [
+    "./data:/app/data:Z"
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
