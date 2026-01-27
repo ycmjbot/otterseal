@@ -138,13 +138,13 @@ function AboutContent() {
   );
 }
 
-export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, onToggleTheme, isHomePage }) {
+export default function Note({ isStarred, onToggleStar, onOpenSidebar, theme, onToggleTheme, isHomePage, isAboutPage }) {
   const { title: urlTitle } = useParams();
   const rawTitle = decodeURIComponent(urlTitle || '');
   
   // Special pages
-  const isHome = isHomePage || rawTitle === '';
-  const isAbout = rawTitle.toLowerCase() === 'about';
+  const isHome = isHomePage || (!isAboutPage && rawTitle === '');
+  const isAbout = isAboutPage || rawTitle.toLowerCase() === 'about';
   const isSpecialPage = isHome || isAbout;
   
   // Display title

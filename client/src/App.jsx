@@ -87,6 +87,7 @@ function AppContent() {
                 theme={theme}
                 onToggleTheme={toggleTheme}
                 isHomePage={false}
+                isAboutPage={true}
               />
             } 
           />
