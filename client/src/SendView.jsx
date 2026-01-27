@@ -135,42 +135,66 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
 
       <main className="flex-1 flex items-center justify-center p-4 md:p-8">
         <div className="max-w-lg w-full">
-          {/* Creator Banner */}
-          {isCreator && status === 'ready' && (
-            <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-              <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold mb-2">
-                <Check className="w-5 h-5" />
-                Secret Created!
+          {/* Creator View - Clean success page */}
+          {isCreator && (status === 'ready' || status === 'loading') && (
+            <div className="text-center space-y-6">
+              <div className="w-20 h-20 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Check className="w-10 h-10 text-green-600 dark:text-green-400" />
               </div>
-              <p className="text-sm text-green-600 dark:text-green-400 mb-3">
-                Share this link with someone:
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={shareUrl}
-                  className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded-lg text-gray-700 dark:text-gray-300 truncate"
-                />
-                <button
-                  onClick={handleCopyLink}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-                >
-                  {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {linkCopied ? 'Copied!' : 'Copy'}
-                </button>
+              
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Secret Created!
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Share this link with someone:
+                </p>
               </div>
-              {metadata?.burnAfterReading && (
-                <div className="mt-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>Don't open this yourself — it will be deleted!</span>
+              
+              <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={shareUrl}
+                    className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
+                  />
+                  <button
+                    onClick={handleCopyLink}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {linkCopied ? 'Copied!' : 'Copy'}
+                  </button>
                 </div>
-              )}
+                
+                {metadata?.expiresAt && (
+                  <p className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Clock className="w-4 h-4" />
+                    Expires: {formatExpiry(metadata.expiresAt)}
+                  </p>
+                )}
+                
+                {metadata?.burnAfterReading && (
+                  <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-sm font-medium">
+                    <AlertTriangle className="w-4 h-4" />
+                    Don't open this yourself — it will be deleted!
+                  </div>
+                )}
+              </div>
+              
+              <Link
+                to="/send"
+                className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                <Send className="w-4 h-4" />
+                Create another secret
+              </Link>
             </div>
           )}
 
-          {/* Loading State */}
-          {status === 'loading' && (
+          {/* Loading State (only for recipients) */}
+          {status === 'loading' && !isCreator && (
             <div className="text-center py-12">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center animate-pulse">
                 <Mail className="w-8 h-8 text-gray-400" />
@@ -179,8 +203,8 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
             </div>
           )}
 
-          {/* Ready State - Envelope */}
-          {status === 'ready' && (
+          {/* Ready State - Envelope (only for recipients, not creators) */}
+          {status === 'ready' && !isCreator && (
             <div className="text-center">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                 <Mail className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
