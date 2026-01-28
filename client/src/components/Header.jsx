@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Moon, Sun, Star, Loader2, Check, WifiOff } from 'lucide-react';
 import clsx from 'clsx';
@@ -16,27 +16,15 @@ export default function Header({
   const location = useLocation();
   const params = useParams();
   
-  const getCurrentTitleFromURL = () => {
+  const currentTitle = (() => {
     if (location.pathname === '/') return '';
     if (location.pathname === '/about') return 'About';
     if (location.pathname === '/send') return 'Send';
     if (location.pathname.startsWith('/send/')) return 'Send';
-    const titleParam = params.title;
-    return titleParam ? decodeURIComponent(titleParam) : '';
-  };
-
-  const [localTitle, setLocalTitle] = useState(getCurrentTitleFromURL());
-
-  // Only sync localTitle when the actual URL title changes externally (not by typing)
-  useEffect(() => {
-    const urlTitle = getCurrentTitleFromURL();
-    if (urlTitle !== localTitle) {
-      setLocalTitle(urlTitle);
-    }
-  }, [location.pathname, params.title]);
+    return params.title ? decodeURIComponent(params.title) : '';
+  })();
 
   const handleTitleChange = (newTitle) => {
-    setLocalTitle(newTitle);
     const trimmed = newTitle.trim();
     if (!trimmed) {
       navigate('/');
@@ -54,7 +42,7 @@ export default function Header({
                      location.pathname !== '/send' &&
                      !location.pathname.startsWith('/send/');
 
-  const showStar = isNotePage && localTitle;
+  const showStar = isNotePage && currentTitle;
 
   const statusIndicator = status && (
     <div className="flex items-center space-x-2 text-sm font-medium">
@@ -113,7 +101,7 @@ export default function Header({
               name="global-title-header"
               autoComplete="off"
               spellCheck="false"
-              value={localTitle}
+              value={currentTitle}
               placeholder="Enter a note title..."
               onChange={(e) => handleTitleChange(e.target.value)}
               onKeyDown={(e) => {
@@ -125,13 +113,13 @@ export default function Header({
             />
             {showStar && (
               <button
-                onClick={() => onToggleStar(localTitle)}
+                onClick={() => onToggleStar(currentTitle)}
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <Star
                   className={clsx(
                     'w-4 h-4',
-                    isStarred(localTitle) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
+                    isStarred(currentTitle) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
                   )}
                 />
               </button>
