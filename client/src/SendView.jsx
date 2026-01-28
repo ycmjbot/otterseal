@@ -287,12 +287,12 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
         </div>
       </main>
 
-      {/* Fixed bottom share bar for creators */}
+      {/* Floating success card for creators */}
       {isCreator && status === 'ready' && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 shadow-lg">
-          <div className="max-w-lg mx-auto space-y-2">
-            <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 text-sm font-medium">
-              <Check className="w-4 h-4" />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 shadow-lg space-y-3">
+            <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-400 font-medium">
+              <Check className="w-5 h-5" />
               Secret created! Share this link:
             </div>
             <div className="flex gap-2">
@@ -300,11 +300,11 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
                 type="text"
                 readOnly
                 value={shareUrl}
-                className="flex-1 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
+                className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded-lg text-gray-700 dark:text-gray-300 truncate"
               />
               <button
                 onClick={handleCopyLink}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
               >
                 {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 {linkCopied ? 'Copied!' : 'Copy'}
