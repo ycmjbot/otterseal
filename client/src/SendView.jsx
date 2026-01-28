@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { hashTitle, deriveKey, decryptNote } from './cryptoUtils';
 import { Mail, MailOpen, Copy, Check, Clock, Flame, AlertTriangle, XCircle, Moon, Sun, Send, ArrowLeft } from 'lucide-react';
 
@@ -13,9 +14,21 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
   const [content, setContent] = useState(null);
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const toastShownRef = useRef(false);
 
   const title = `/send/${uuid}`;
   const shareUrl = window.location.origin + `/send/${uuid}`;
+
+  // Show toast for creators
+  useEffect(() => {
+    if (isCreator && status === 'ready' && !toastShownRef.current) {
+      toastShownRef.current = true;
+      toast.success('Secret Created!', {
+        description: 'Share the link below with someone.',
+        duration: 5000,
+      });
+    }
+  }, [isCreator, status]);
 
   // Load metadata on mount
   useEffect(() => {
@@ -135,66 +148,45 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
 
       <main className="flex-1 flex items-center justify-center p-4 md:p-8">
         <div className="max-w-lg w-full">
-          {/* Creator View - Clean success page */}
-          {isCreator && (status === 'ready' || status === 'loading') && (
-            <div className="text-center space-y-6">
-              <div className="w-20 h-20 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <Check className="w-10 h-10 text-green-600 dark:text-green-400" />
+          {/* Creator Banner - Share link */}
+          {isCreator && status === 'ready' && (
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl space-y-3">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
+                Share this link:
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={shareUrl}
+                  className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                >
+                  {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {linkCopied ? 'Copied!' : 'Copy'}
+                </button>
               </div>
-              
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Secret Created!
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Share this link with someone:
-                </p>
-              </div>
-              
-              <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={shareUrl}
-                    className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
-                  />
-                  <button
-                    onClick={handleCopyLink}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {linkCopied ? 'Copied!' : 'Copy'}
-                  </button>
+              {metadata?.burnAfterReading && (
+                <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
+                  <AlertTriangle className="w-4 h-4" />
+                  Don't open — it will be deleted!
                 </div>
-                
-                {metadata?.expiresAt && (
-                  <p className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <Clock className="w-4 h-4" />
-                    Expires: {formatExpiry(metadata.expiresAt)}
-                  </p>
-                )}
-                
-                {metadata?.burnAfterReading && (
-                  <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-sm font-medium">
-                    <AlertTriangle className="w-4 h-4" />
-                    Don't open this yourself — it will be deleted!
-                  </div>
-                )}
-              </div>
-              
-              <Link
-                to="/send"
-                className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                <Send className="w-4 h-4" />
-                Create another secret
-              </Link>
+              )}
             </div>
           )}
+          
+          {/* Preview label for creators */}
+          {isCreator && status === 'ready' && (
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+              👇 This is what the recipient will see
+            </p>
+          )}
 
-          {/* Loading State (only for recipients) */}
-          {status === 'loading' && !isCreator && (
+          {/* Loading State */}
+          {status === 'loading' && (
             <div className="text-center py-12">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center animate-pulse">
                 <Mail className="w-8 h-8 text-gray-400" />
@@ -203,8 +195,8 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
             </div>
           )}
 
-          {/* Ready State - Envelope (only for recipients, not creators) */}
-          {status === 'ready' && !isCreator && (
+          {/* Ready State - Envelope */}
+          {status === 'ready' && (
             <div className="text-center">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                 <Mail className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />

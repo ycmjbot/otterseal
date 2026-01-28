@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import Note from './Note';
 import Sidebar from './Sidebar';
 import SendCompose from './SendCompose';
@@ -56,6 +57,14 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex bg-white dark:bg-gray-950 transition-colors">
+      <Toaster 
+        position="top-center" 
+        richColors 
+        theme={theme}
+        toastOptions={{
+          className: 'font-sans',
+        }}
+      />
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)}
