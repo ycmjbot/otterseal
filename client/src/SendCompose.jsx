@@ -55,8 +55,8 @@ export default function SendCompose({ theme, onToggleTheme, onOpenSidebar }) {
         throw new Error('Failed to create secret');
       }
       
-      // Navigate to the view page with ?created=1
-      navigate(`/send/${uuid}?created=1`);
+      // Navigate to the view page with state instead of query param
+      navigate(`/send/${uuid}`, { state: { created: true } });
     } catch (e) {
       console.error('Create error:', e);
       setError('Failed to create secret. Please try again.');

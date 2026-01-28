@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { hashTitle, deriveKey, decryptNote } from './cryptoUtils';
 import { Mail, MailOpen, Copy, Check, Clock, Flame, AlertTriangle, XCircle, Moon, Sun, Send, ArrowLeft } from 'lucide-react';
 
 export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
   const { uuid } = useParams();
-  const [searchParams] = useSearchParams();
-  const isCreator = searchParams.get('created') === '1';
+  const location = useLocation();
+  const isCreator = location.state?.created === true;
 
   const [status, setStatus] = useState('loading'); // loading, ready, opened, notfound, expired, error
   const [metadata, setMetadata] = useState(null);
@@ -24,8 +24,14 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
     if (isCreator && status === 'ready' && !toastShownRef.current) {
       toastShownRef.current = true;
       toast.success('Secret Created!', {
-        description: 'Share the link below with someone.',
-        duration: 5000,
+        description: 'Share the link with someone.',
+        duration: 8000,
+        action: {
+          label: 'Copy Link',
+          onClick: () => {
+            handleCopyLink();
+          },
+        },
       });
     }
   }, [isCreator, status]);
