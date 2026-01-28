@@ -19,48 +19,16 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
   const title = `/send/${uuid}`;
   const shareUrl = window.location.origin + `/send/${uuid}`;
 
-  // Show persistent toast for creators with share link
+  // Show simple success toast for creators
   useEffect(() => {
     if (isCreator && status === 'ready' && !toastShownRef.current) {
       toastShownRef.current = true;
-      toast.success(
-        <div className="space-y-2">
-          <p className="font-medium">Secret Created!</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Share this link:</p>
-          <div className="flex items-center gap-2 mt-2">
-            <input
-              type="text"
-              readOnly
-              value={shareUrl}
-              className="flex-1 px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 truncate min-w-0"
-              onClick={(e) => e.target.select()}
-            />
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(shareUrl);
-                setLinkCopied(true);
-                setTimeout(() => setLinkCopied(false), 2000);
-              }}
-              className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded transition-colors flex items-center gap-1 shrink-0"
-            >
-              {linkCopied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              {linkCopied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-          {metadata?.burnAfterReading && (
-            <p className="flex items-center gap-1 text-amber-600 dark:text-amber-400 text-xs mt-2">
-              <AlertTriangle className="w-3 h-3" />
-              Don't open — it will be deleted!
-            </p>
-          )}
-        </div>,
-        {
-          duration: Infinity,
-          closeButton: true,
-        }
-      );
+      toast.success('Secret created!', {
+        description: 'Share the link below.',
+        duration: 4000,
+      });
     }
-  }, [isCreator, status, metadata]);
+  }, [isCreator, status]);
 
   // Load metadata on mount
   useEffect(() => {
@@ -180,13 +148,6 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
 
       <main className="flex-1 flex items-center justify-center p-4 md:p-8">
         <div className="max-w-lg w-full">
-          {/* Preview label for creators */}
-          {isCreator && status === 'ready' && (
-            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-4">
-              👇 This is what the recipient will see
-            </p>
-          )}
-
           {/* Loading State */}
           {status === 'loading' && (
             <div className="text-center py-12">
@@ -230,6 +191,36 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
                 <MailOpen className="w-5 h-5" />
                 Open Message
               </button>
+
+              {/* Share link for creators */}
+              {isCreator && (
+                <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl space-y-3">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
+                    Share this link:
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={shareUrl}
+                      className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
+                    />
+                    <button
+                      onClick={handleCopyLink}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {linkCopied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                  {metadata?.burnAfterReading && (
+                    <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
+                      <AlertTriangle className="w-4 h-4" />
+                      Don't open — it will be deleted!
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
