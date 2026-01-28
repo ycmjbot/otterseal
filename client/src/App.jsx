@@ -1,139 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import Note from './Note';
+
 import Sidebar from './Sidebar';
-import SendCompose from './SendCompose';
-import SendView from './SendView';
+import Header from './components/Header';
+import useTheme from './hooks/useTheme';
+import useStarredNotes from './hooks/useStarredNotes';
 
-function useTheme() {
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-  return { theme, toggle: () => setTheme(t => t === 'light' ? 'dark' : 'light') };
-}
-
-function useStarredNotes() {
-  const [starred, setStarred] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem('starred') || '[]');
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('starred', JSON.stringify(starred));
-  }, [starred]);
-
-  const isStarred = (title) => starred.includes(title);
-  const toggle = (title) => {
-    setStarred(prev => 
-      prev.includes(title) 
-        ? prev.filter(t => t !== title)
-        : [...prev, title]
-    );
-  };
-
-  return { starred, isStarred, toggle };
-}
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import NotePage from './pages/NotePage';
+import SendComposePage from './pages/SendComposePage';
+import SendViewPage from './pages/SendViewPage';
 
 function AppContent() {
   const { theme, toggle: toggleTheme } = useTheme();
-  const { starred, isStarred, toggle: toggleStar } = useStarredNotes();
+  const { starred, isStarred, toggle: toggleStar, clear: clearStarred } = useStarredNotes();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [noteStatus, setNoteStatus] = useState(null);
   const location = useLocation();
 
-  // Close sidebar on route change (mobile)
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  const isHomePage = location.pathname === '/';
+  const commonProps = {
+    onOpenSidebar: () => setSidebarOpen(true),
+    theme,
+    onToggleTheme: toggleTheme,
+  };
 
   return (
     <div className="min-h-screen flex bg-white dark:bg-gray-950 transition-colors">
-      <Toaster 
-        position="top-center" 
-        richColors 
+      <Toaster
+        position="top-center"
+        richColors
         theme={theme}
         toastOptions={{
           className: 'font-sans',
         }}
       />
-      <Sidebar 
-        isOpen={sidebarOpen} 
+      
+      <Sidebar
+        isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         starred={starred}
+        onClearStarred={clearStarred}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
-      
+
       <div className="flex-1 flex flex-col min-h-screen lg:ml-72">
+        <Header
+          onOpenSidebar={() => setSidebarOpen(true)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          isStarred={isStarred}
+          onToggleStar={toggleStar}
+          status={noteStatus}
+        />
+
         <Routes>
-          <Route 
-            path="/" 
+          <Route path="/" element={<HomePage {...commonProps} />} />
+          <Route path="/about" element={<AboutPage {...commonProps} />} />
+          <Route path="/send" element={<SendComposePage {...commonProps} />} />
+          <Route path="/send/:uuid" element={<SendViewPage {...commonProps} />} />
+          <Route
+            path="/:title"
             element={
-              <Note 
-                isStarred={isStarred}
-                onToggleStar={toggleStar}
-                onOpenSidebar={() => setSidebarOpen(true)}
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                isHomePage={true}
+              <NotePage
+                {...commonProps}
+                onStatusChange={setNoteStatus}
               />
-            } 
-          />
-          <Route 
-            path="/about" 
-            element={
-              <Note 
-                isStarred={isStarred}
-                onToggleStar={toggleStar}
-                onOpenSidebar={() => setSidebarOpen(true)}
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                isHomePage={false}
-                isAboutPage={true}
-              />
-            } 
-          />
-          <Route 
-            path="/send" 
-            element={
-              <SendCompose 
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                onOpenSidebar={() => setSidebarOpen(true)}
-              />
-            } 
-          />
-          <Route 
-            path="/send/:uuid" 
-            element={
-              <SendView 
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                onOpenSidebar={() => setSidebarOpen(true)}
-              />
-            } 
-          />
-          <Route 
-            path="/:title" 
-            element={
-              <Note 
-                isStarred={isStarred}
-                onToggleStar={toggleStar}
-                onOpenSidebar={() => setSidebarOpen(true)}
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                isHomePage={false}
-              />
-            } 
+            }
           />
         </Routes>
       </div>
