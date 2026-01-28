@@ -14,7 +14,6 @@ export default function Header({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams();
   
   const currentTitle = (() => {
     const path = location.pathname;
