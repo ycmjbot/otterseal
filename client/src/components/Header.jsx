@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Moon, Sun, Star, Loader2, Check, WifiOff } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -17,11 +17,14 @@ export default function Header({
   const params = useParams();
   
   const currentTitle = (() => {
-    if (location.pathname === '/') return '';
-    if (location.pathname === '/about') return 'About';
-    if (location.pathname === '/send') return 'Send';
-    if (location.pathname.startsWith('/send/')) return 'Send';
-    return params.title ? decodeURIComponent(params.title) : '';
+    const path = location.pathname;
+    if (path === '/') return '';
+    if (path === '/about') return 'About';
+    if (path === '/send') return 'Send';
+    if (path.startsWith('/send/')) return 'Send';
+    
+    // For note pages, take everything after the first slash
+    return decodeURIComponent(path.slice(1));
   })();
 
   const handleTitleChange = (newTitle) => {
