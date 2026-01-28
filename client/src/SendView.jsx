@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { toast } from 'sonner';
 import { hashTitle, deriveKey, decryptNote } from './cryptoUtils';
 import { Mail, MailOpen, Copy, Check, Clock, Flame, AlertTriangle, XCircle, Moon, Sun, Send, ArrowLeft } from 'lucide-react';
 
@@ -14,21 +13,9 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
   const [content, setContent] = useState(null);
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-  const toastShownRef = useRef(false);
 
   const title = `/send/${uuid}`;
   const shareUrl = window.location.origin + `/send/${uuid}`;
-
-  // Show simple success toast for creators
-  useEffect(() => {
-    if (isCreator && status === 'ready' && !toastShownRef.current) {
-      toastShownRef.current = true;
-      toast.success('Secret created!', {
-        description: 'Share the link below.',
-        duration: 4000,
-      });
-    }
-  }, [isCreator, status]);
 
   // Load metadata on mount
   useEffect(() => {
@@ -191,36 +178,6 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
                 <MailOpen className="w-5 h-5" />
                 Open Message
               </button>
-
-              {/* Share link for creators */}
-              {isCreator && (
-                <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl space-y-3">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
-                    Share this link:
-                  </p>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      readOnly
-                      value={shareUrl}
-                      className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
-                    />
-                    <button
-                      onClick={handleCopyLink}
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
-                    >
-                      {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                      {linkCopied ? 'Copied!' : 'Copy'}
-                    </button>
-                  </div>
-                  {metadata?.burnAfterReading && (
-                    <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-sm">
-                      <AlertTriangle className="w-4 h-4" />
-                      Don't open — it will be deleted!
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           )}
 
@@ -329,6 +286,39 @@ export default function SendView({ theme, onToggleTheme, onOpenSidebar }) {
           )}
         </div>
       </main>
+
+      {/* Fixed bottom share bar for creators */}
+      {isCreator && status === 'ready' && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 shadow-lg">
+          <div className="max-w-lg mx-auto space-y-2">
+            <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 text-sm font-medium">
+              <Check className="w-4 h-4" />
+              Secret created! Share this link:
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={shareUrl}
+                className="flex-1 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 truncate"
+              />
+              <button
+                onClick={handleCopyLink}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+              >
+                {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {linkCopied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            {metadata?.burnAfterReading && (
+              <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 text-xs">
+                <AlertTriangle className="w-3 h-3" />
+                Don't open — it will be deleted!
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
