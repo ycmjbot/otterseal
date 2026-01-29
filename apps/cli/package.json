@@ -1,0 +1,20 @@
+{
+  "name": "@securepad/cli",
+  "version": "1.0.0",
+  "description": "Zero-knowledge encrypted notepad CLI",
+  "type": "module",
+  "bin": {
+    "securepad": "./bin/securepad.js"
+  },
+  "scripts": {
+    "dev": "echo 'CLI ready'",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "@securepad/shared": "workspace:*",
+    "commander": "^13.1.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
