@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { hashTitle, deriveKey, decryptNote } from '../cryptoUtils';
+import { hashTitle, deriveKey, decryptNote } from '@securepad/shared';
 import {
   Mail,
   MailOpen,

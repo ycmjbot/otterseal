@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { hashTitle, deriveKey, encryptNote, decryptNote } from '../cryptoUtils';
+import { hashTitle, deriveKey, encryptNote, decryptNote } from '@securepad/shared';
 import Editor from '../Editor';
 import Layout from '../components/Layout';
 

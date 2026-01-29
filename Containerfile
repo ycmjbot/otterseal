@@ -3,25 +3,28 @@ FROM node:22-slim AS builder
 
 WORKDIR /app
 
-# Copy dependency definitions
-COPY client/package*.json ./client/
+# Install pnpm
+RUN corepack enable pnpm
+
+# Copy root config and catalogs
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+
+# Copy all package.json files for better caching
+COPY apps/client/package.json ./apps/client/
+COPY apps/server/package.json ./apps/server/
+COPY packages/shared/package.json ./packages/shared/
 
 # Install dependencies
-RUN cd client && npm install
+RUN CI=true pnpm install --frozen-lockfile
 
 # Copy source code
-COPY client ./client
+COPY . .
 
 # Build client
-RUN cd client && npm run build
+RUN pnpm --filter client build
 
-# Server stage
-WORKDIR /app/server
-COPY server/package*.json ./
-RUN npm install --only=production
-
-# Copy server code
-COPY server ./
+# Deploy server with all dependencies (resolves pnpm symlinks)
+RUN pnpm --filter server deploy --prod --legacy /app/server-deploy
 
 # Runtime stage
 FROM node:22-slim
@@ -31,11 +34,11 @@ WORKDIR /app
 # Install curl for healthchecks
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Copy server files
-COPY --from=builder /app/server /app
+# Copy deployed server (self-contained with real node_modules)
+COPY --from=builder /app/server-deploy /app
 
-# Copy built client assets to server public directory
-COPY --from=builder /app/client/dist /app/public
+# Copy built client
+COPY --from=builder /app/apps/client/dist /app/public
 
 # Environment
 ENV NODE_ENV=production

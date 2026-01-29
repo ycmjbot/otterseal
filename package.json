@@ -1,14 +1,14 @@
 {
-  "name": "public-encrypted-notepad",
+  "name": "securepad-monorepo",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
-    "server": "cd server && npm start",
-    "client": "cd client && npm run dev",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "pnpm --filter \"*\" dev",
+    "build": "pnpm --filter \"*\" build",
+    "start": "pnpm --filter server start"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  }
+    "concurrently": "catalog:"
+  },
+  "packageManager": "pnpm@10.28.2"
 }
