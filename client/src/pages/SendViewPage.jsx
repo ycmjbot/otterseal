@@ -205,6 +205,47 @@ export default function SendViewPage() {
           </div>
         )}
 
+        {(status === 'notfound' || status === 'expired') && (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <XCircle className="w-12 h-12 text-red-600 dark:text-red-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {status === 'notfound' ? 'Message not found' : 'Message has expired'}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+              {status === 'notfound'
+                ? "This link doesn't exist or has already been opened and deleted."
+                : 'This message has passed its expiration date and is no longer available.'}
+            </p>
+            <Link
+              to="/send"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-xl transition-colors"
+            >
+              <Send className="w-4 h-4" />
+              Send a secret
+            </Link>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <AlertTriangle className="w-12 h-12 text-amber-600 dark:text-amber-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Something went wrong</h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
+              We couldn't load the message. Please try again later.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-xl transition-colors"
+            >
+              Reload Page
+            </button>
+          </div>
+        )}
+
         {isCreator && status === 'ready' && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-20">
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 shadow-lg space-y-3">
