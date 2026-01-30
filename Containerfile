@@ -27,11 +27,11 @@ RUN pnpm build
 RUN mkdir -p /app/server-deploy && \
     cp apps/server/package.json /app/server-deploy/ && \
     cp -r apps/server/dist /app/server-deploy/ && \
-    mkdir -p /app/packages && \
-    cp -r packages/shared /app/packages/ && \
+    mkdir -p /app/packages-temp && \
+    cp -r packages/shared /app/packages-temp/ && \
     cd /app/server-deploy && \
     pnpm install --prod --no-frozen-lockfile && \
-    rm -rf /app/packages/shared
+    rm -rf /app/packages-temp
 
 # Runtime stage
 FROM node:22-slim
