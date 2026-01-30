@@ -7,6 +7,7 @@ Zero-knowledge encrypted notepad with real-time collaboration.
 - **Live:** https://securepad.jbot.ycmjason.com
 - **Repo:** https://github.com/ycmjbot/securepad
 - **Stack:** Node.js, Express, WebSocket, SQLite, React, Vite, Tailwind
+- **Language:** TypeScript (Client, Server, Shared Package)
 
 ## Architecture
 
@@ -23,18 +24,26 @@ securepad/
 └── app.otterway.json    # Deployment config
 ```
 
-## Zero-Knowledge Encryption
+## Zero-Knowledge Encryption (Security Architecture)
 
-All encryption is **client-side**. Server never sees plaintext.
+We use **HKDF (Domain Separation)** to prevent the server from deriving the encryption key from the note ID.
 
+**Old Flow (Insecure):** `ID = Hash(Title)`, `Key = Hash(Title)` → Server knew Key.
+**New Flow (Secure):**
 ```
-Title → SHA-256 hash → Note ID (stored on server)
-Title → SHA-256 → AES-256-GCM key derivation
-Content → Encrypt with key → Ciphertext (stored on server)
+MasterSecret = HKDF_Extract(Title)
+
+Note ID (Public)  = HKDF_Expand(MasterSecret, info="ID", salt="SecurePad")
+Encryption Key    = HKDF_Expand(MasterSecret, info="KEY", salt="SecurePad")
 ```
+
+- **Note ID:** Sent to server. Used as database primary key.
+- **Encryption Key:** Kept in client. Used for AES-256-GCM.
+- **Result:** The server knows the ID but cannot mathematically derive the Key.
 
 **Key files:**
-- `packages/shared/src/index.js` — `hashTitle()`, `deriveKey()`, `encryptNote()`, `decryptNote()`
+- `packages/shared/src/index.ts` — `hashTitle()`, `deriveKey()`, `encryptNote()`, `decryptNote()`
+- Constants: `HKDF_SALT="SecurePad"`, `HKDF_INFO_ID="ID"`, `HKDF_INFO_KEY="KEY"`
 
 ## Server API
 
@@ -86,8 +95,8 @@ delete <title>            # Delete note
 - **Themes:** Light/dark mode
 
 **Key client files:**
-- `apps/client/src/` — React app
-- `apps/client/src/hooks/` — `useStarredNotes.js`, `useTheme.js`
+- `apps/client/src/` — React app (TypeScript)
+- `apps/client/src/hooks/` — `useStarredNotes.ts`, `useTheme.ts`
 
 ## Development
 
@@ -124,7 +133,7 @@ SQLite with WAL mode. Schema:
 
 ```sql
 CREATE TABLE notes (
-  id TEXT PRIMARY KEY,           -- SHA-256 hash of title
+  id TEXT PRIMARY KEY,           -- Derived via HKDF(Title, "ID")
   content TEXT,                  -- Encrypted JSON
   expires_at INTEGER,            -- Unix timestamp (ms), nullable
   burn_after_reading INTEGER     -- 0 or 1
@@ -135,9 +144,9 @@ Expired notes are cleaned up every 60 seconds.
 
 ## Common Tasks
 
-**Add a new API endpoint:** Edit `apps/server/server.js`
+**Add a new API endpoint:** Edit `apps/server/server.ts`
 
-**Change crypto:** Edit `packages/shared/src/index.js` (affects all apps)
+**Change crypto:** Edit `packages/shared/src/index.ts` (affects all apps)
 
 **Add CLI command:** Edit `apps/cli/bin/securepad.js`
 

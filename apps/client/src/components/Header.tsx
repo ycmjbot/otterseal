@@ -3,6 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Moon, Sun, Star, Loader2, Check, WifiOff } from 'lucide-react';
 import clsx from 'clsx';
 
+interface HeaderProps {
+  onOpenSidebar: () => void;
+  theme: string;
+  onToggleTheme: () => void;
+  isStarred: (title: string) => boolean;
+  onToggleStar: (title: string) => void;
+  status: string | null;
+  leftActions?: React.ReactNode;
+}
+
 export default function Header({
   onOpenSidebar,
   theme,
@@ -11,7 +21,7 @@ export default function Header({
   onToggleStar,
   status,
   leftActions,
-}) {
+}: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -26,7 +36,7 @@ export default function Header({
     return decodeURIComponent(path.slice(1));
   })();
 
-  const handleTitleChange = (newTitle) => {
+  const handleTitleChange = (newTitle: string) => {
     const trimmed = newTitle.trim();
     if (!trimmed) {
       navigate('/');
@@ -108,7 +118,7 @@ export default function Header({
               onChange={(e) => handleTitleChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  e.target.blur();
+                  (e.target as HTMLInputElement).blur();
                 }
               }}
               className="text-lg font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none max-w-[300px] truncate transition-colors placeholder-gray-400"

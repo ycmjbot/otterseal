@@ -79,12 +79,24 @@ const upsertNote = db.prepare(`
 const deleteNote = db.prepare('DELETE FROM notes WHERE id = ?');
 const deleteExpiredNotes = db.prepare('DELETE FROM notes WHERE expires_at IS NOT NULL AND expires_at < ?');
 
+// Types
+interface Note {
+  content: string;
+  expires_at: number | null;
+  burn_after_reading: number;
+}
+
+interface NoteMetadata {
+  expires_at: number | null;
+  burn_after_reading: number;
+}
+
 // Cleanup expired notes every minute
 setInterval(() => {
   try {
     const result = deleteExpiredNotes.run(Date.now());
-    if (result.changes > 0) {
-      log(`Cleaned up ${result.changes} expired notes`);
+    if ((result as any).changes > 0) {
+      log(`Cleaned up ${(result as any).changes} expired notes`);
     }
   } catch (e: any) {
     log(`Cleanup error: ${e.message}`);
@@ -92,7 +104,7 @@ setInterval(() => {
 }, 60 * 1000);
 
 // Helper: Check if note is expired
-function isExpired(note: any) {
+function isExpired(note: NoteMetadata) {
   return note.expires_at && note.expires_at < Date.now();
 }
 
@@ -107,7 +119,7 @@ app.get('/api/notes/:id', (req: Request, res: Response) => {
   
   try {
     if (peek) {
-      const note = getNoteMetadata.get(id);
+      const note = getNoteMetadata.get(id) as NoteMetadata | undefined;
       if (!note) {
         return res.status(404).json({ error: 'Not found' });
       }
@@ -121,7 +133,7 @@ app.get('/api/notes/:id', (req: Request, res: Response) => {
         burnAfterReading: note.burn_after_reading === 1
       });
     } else {
-      const note = getNote.get(id);
+      const note = getNote.get(id) as Note | undefined;
       if (!note) {
         return res.status(404).json({ error: 'Not found' });
       }
@@ -216,7 +228,7 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
 
   console.log(`Client connected to room ${id}`);
 
-  const note = getNote.get(id);
+  const note = getNote.get(id) as Note | undefined;
   if (note && !isExpired(note)) {
     ws.send(JSON.stringify({ type: 'init', content: note.content }));
   } else {
@@ -237,7 +249,7 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
           return;
         }
 
-        const existing = getNoteMetadata.get(id);
+        const existing = getNoteMetadata.get(id) as NoteMetadata | undefined;
         upsertNote.run(
           id,
           data.content,

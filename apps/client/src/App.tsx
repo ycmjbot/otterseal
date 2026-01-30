@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
@@ -17,7 +17,7 @@ function AppContent() {
   const { theme, toggle: toggleTheme } = useTheme();
   const { starred, isStarred, toggle: toggleStar, clear: clearStarred } = useStarredNotes();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [noteStatus, setNoteStatus] = useState(null);
+  const [noteStatus, setNoteStatus] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function AppContent() {
       <Toaster
         position="top-center"
         richColors
-        theme={theme}
+        theme={theme as 'light' | 'dark'}
         toastOptions={{
           className: 'font-sans',
         }}
@@ -61,15 +61,14 @@ function AppContent() {
         />
 
         <Routes>
-          <Route path="/" element={<HomePage {...commonProps} />} />
-          <Route path="/about" element={<AboutPage {...commonProps} />} />
-          <Route path="/send" element={<SendComposePage {...commonProps} />} />
-          <Route path="/send/:uuid" element={<SendViewPage {...commonProps} />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/send" element={<SendComposePage />} />
+          <Route path="/send/:uuid" element={<SendViewPage />} />
           <Route
             path="/:title"
             element={
               <NotePage
-                {...commonProps}
                 onStatusChange={setNoteStatus}
               />
             }

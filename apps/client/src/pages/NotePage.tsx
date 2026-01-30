@@ -4,21 +4,25 @@ import { hashTitle, deriveKey, encryptNote, decryptNote } from '@securepad/share
 import Editor from '../Editor';
 import Layout from '../components/Layout';
 
-export default function NotePage({ onStatusChange }) {
+interface NotePageProps {
+  onStatusChange?: (status: string | null) => void;
+}
+
+export default function NotePage({ onStatusChange }: NotePageProps) {
   const { title: urlTitle } = useParams();
   const rawTitle = decodeURIComponent(urlTitle || '');
 
   const [debouncedTitle, setDebouncedTitle] = useState(rawTitle);
-  const [content, setContent] = useState(null);
-  const [remoteContent, setRemoteContent] = useState(null);
-  const [status, setStatus] = useState('connecting');
-  const [key, setKey] = useState(null);
+  const [content, setContent] = useState<string | null>(null);
+  const [remoteContent, setRemoteContent] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>('connecting');
+  const [key, setKey] = useState<CryptoKey | null>(null);
 
-  const wsRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastContentRef = useRef('');
 
-  // Report status changes to App.jsx for header display
+  // Report status changes to App.tsx for header display
   useEffect(() => {
     onStatusChange?.(status);
     return () => onStatusChange?.(null);
@@ -37,11 +41,11 @@ export default function NotePage({ onStatusChange }) {
   }, [rawTitle]);
 
   // Check if Lexical content is empty
-  function isContentEmpty(jsonStr) {
+  function isContentEmpty(jsonStr: string) {
     if (!jsonStr) return true;
     try {
       const data = JSON.parse(jsonStr);
-      const hasText = (node) => {
+      const hasText = (node: any): boolean => {
         if (node.text && node.text.trim()) return true;
         if (node.children) return node.children.some(hasText);
         return false;
@@ -52,7 +56,7 @@ export default function NotePage({ onStatusChange }) {
     }
   }
 
-  async function saveNow(expectedTitle) {
+  async function saveNow(expectedTitle: string) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -119,7 +123,7 @@ export default function NotePage({ onStatusChange }) {
 
   // Warn on unsaved changes
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (timeoutRef.current) {
         e.preventDefault();
         e.returnValue = '';
@@ -129,7 +133,7 @@ export default function NotePage({ onStatusChange }) {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
-  function connectWS(id, k, currentTitle) {
+  function connectWS(id: string, k: CryptoKey, currentTitle: string) {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
     const wsUrl = `${protocol}//${host}?id=${id}`;
@@ -179,7 +183,7 @@ export default function NotePage({ onStatusChange }) {
     ws.onerror = () => setStatus('error');
   }
 
-  const handleChange = (newJson) => {
+  const handleChange = (newJson: string) => {
     lastContentRef.current = newJson;
     setStatus('saving');
 

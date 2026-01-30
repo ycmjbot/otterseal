@@ -1,9 +1,20 @@
 import { useState, useEffect } from 'react';
 
+interface StarredNote {
+  title: string;
+}
+
 export default function useStarredNotes() {
-  const [starred, setStarred] = useState(() => {
+  const [starred, setStarred] = useState<StarredNote[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem('starred') || '[]');
+      const saved = localStorage.getItem('starred');
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      // Compatibility with old array of strings
+      if (Array.isArray(parsed) && typeof parsed[0] === 'string') {
+        return parsed.map((title: string) => ({ title }));
+      }
+      return parsed;
     } catch {
       return [];
     }
@@ -13,13 +24,13 @@ export default function useStarredNotes() {
     localStorage.setItem('starred', JSON.stringify(starred));
   }, [starred]);
 
-  const isStarred = (title) => starred.includes(title);
+  const isStarred = (title: string) => starred.some(s => s.title === title);
   
-  const toggle = (title) => {
+  const toggle = (title: string) => {
     setStarred(prev => 
-      prev.includes(title) 
-        ? prev.filter(t => t !== title)
-        : [...prev, title]
+      isStarred(title)
+        ? prev.filter(t => t.title !== title)
+        : [...prev, { title }]
     );
   };
 

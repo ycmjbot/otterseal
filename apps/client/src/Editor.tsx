@@ -10,10 +10,9 @@ import { CodeNode } from "@lexical/code";
 import { LinkNode, AutoLinkNode } from "@lexical/link";
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { TRANSFORMERS } from '@lexical/markdown';
-import { clsx } from 'clsx';
 import { useEffect, useRef } from 'react';
 
-const theme = {
+const lexicalTheme = {
   paragraph: 'mb-2 text-gray-800 dark:text-gray-200',
   heading: {
     h1: 'text-3xl font-bold mb-4 mt-6 text-gray-900 dark:text-white',
@@ -34,7 +33,7 @@ const theme = {
   }
 };
 
-function UpdatePlugin({ initialJSON }) {
+function UpdatePlugin({ initialJSON }: { initialJSON: string }) {
     const [editor] = useLexicalComposerContext();
     const isFirstRun = useRef(true);
 
@@ -55,17 +54,13 @@ function UpdatePlugin({ initialJSON }) {
 
 
 // External control plugin to force update when remote changes happen
-function RemoteUpdatePlugin({ json }) {
+function RemoteUpdatePlugin({ json }: { json: string }) {
     const [editor] = useLexicalComposerContext();
     const lastJsonRef = useRef(json);
 
     useEffect(() => {
         if (json && json !== lastJsonRef.current) {
             lastJsonRef.current = json;
-             // Avoid loop if we just emitted this.
-             // But for LWW, we might just have to overwrite.
-             // Ideally we check if *we* were the sender, but encryption makes that hard without metadata.
-             // We'll trust the parent to only pass `json` if it's new from server.
             try {
                 const state = editor.parseEditorState(json);
                 editor.setEditorState(state);
@@ -77,10 +72,16 @@ function RemoteUpdatePlugin({ json }) {
     return null;
 }
 
-export default function Editor({ initialContent, onChange, remoteContent }) {
+interface EditorProps {
+  initialContent: string | null;
+  onChange: (json: string) => void;
+  remoteContent: string | null;
+}
+
+export default function Editor({ initialContent, onChange, remoteContent }: EditorProps) {
   const config = {
     namespace: 'SecurePad',
-    theme,
+    theme: lexicalTheme,
     onError: console.error,
     nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CodeNode, LinkNode, AutoLinkNode]
   };
@@ -97,7 +98,7 @@ export default function Editor({ initialContent, onChange, remoteContent }) {
               Start typing... (Markdown supported)
             </div>
           }
-          ErrorBoundary={({children}) => <div>{children}</div>}
+          ErrorBoundary={({children}) => <>{children}</>}
         />
         <HistoryPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
@@ -106,10 +107,6 @@ export default function Editor({ initialContent, onChange, remoteContent }) {
              onChange(json);
         }} />
         {initialContent && <UpdatePlugin initialJSON={initialContent} />}
-        {/* If remoteContent changes, we might want to update. 
-            However, handling cursor preservation during full-state replacement is hard.
-            For now, we might accept that incoming remote changes overwrite local state if they are newer.
-        */}
         {remoteContent && <RemoteUpdatePlugin json={remoteContent} />}
       </div>
     </LexicalComposer>

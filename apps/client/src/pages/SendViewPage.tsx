@@ -15,14 +15,19 @@ import {
 } from 'lucide-react';
 import Layout from '../components/Layout';
 
+interface SecretMetadata {
+  expiresAt: number | null;
+  burnAfterReading: boolean;
+}
+
 export default function SendViewPage() {
   const { uuid } = useParams();
   const location = useLocation();
   const isCreator = location.state?.created === true;
 
   const [status, setStatus] = useState('loading');
-  const [metadata, setMetadata] = useState(null);
-  const [content, setContent] = useState(null);
+  const [metadata, setMetadata] = useState<SecretMetadata | null>(null);
+  const [content, setContent] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
@@ -91,6 +96,7 @@ export default function SendViewPage() {
   };
 
   const handleCopyContent = async () => {
+    if (!content) return;
     try {
       await navigator.clipboard.writeText(content);
       setCopied(true);
@@ -126,7 +132,7 @@ export default function SendViewPage() {
     }
   };
 
-  const formatExpiry = (timestamp) => {
+  const formatExpiry = (timestamp: number | null) => {
     if (!timestamp) return null;
     const date = new Date(timestamp);
     return date.toLocaleString();
@@ -259,7 +265,7 @@ export default function SendViewPage() {
                   readOnly
                   value={shareUrl}
                   className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded-lg text-gray-700 dark:text-gray-300 truncate"
-                  onClick={(e) => e.target.select()}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
                 <button onClick={handleCopyLink} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                   {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

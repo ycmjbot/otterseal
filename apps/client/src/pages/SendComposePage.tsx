@@ -15,10 +15,10 @@ const EXPIRY_OPTIONS = [
 export default function SendComposePage() {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
-  const [expiryValue, setExpiryValue] = useState(24 * 60 * 60 * 1000);
+  const [expiryValue, setExpiryValue] = useState<number | null>(24 * 60 * 60 * 1000);
   const [burnAfterReading, setBurnAfterReading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async () => {
     if (!message.trim()) return;
@@ -83,12 +83,12 @@ export default function SendComposePage() {
               Expires After
             </label>
             <select
-              value={expiryValue || ''}
+              value={expiryValue ?? ''}
               onChange={(e) => setExpiryValue(e.target.value ? Number(e.target.value) : null)}
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
             >
               {EXPIRY_OPTIONS.map((opt) => (
-                <option key={opt.label} value={opt.value || ''}>
+                <option key={opt.label} value={opt.value ?? ''}>
                   {opt.label}
                 </option>
               ))}

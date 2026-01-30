@@ -3,7 +3,20 @@ import { Link, useParams } from 'react-router-dom';
 import { X, BookOpen, Github, Send } from 'lucide-react';
 import clsx from 'clsx';
 
-export default function Sidebar({ isOpen, onClose, starred, onClearStarred }) {
+interface StarredNote {
+  title: string;
+}
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+  starred: StarredNote[];
+  onClearStarred: () => void;
+  theme: string;
+  onToggleTheme: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: SidebarProps) {
   const { title: currentTitle } = useParams();
   const safeCurrentTitle = decodeURIComponent(currentTitle || '');
 
