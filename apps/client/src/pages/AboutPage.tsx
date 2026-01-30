@@ -48,22 +48,31 @@ export default function AboutPage() {
         </div>
 
         <h3>🔧 The Geeky Stuff</h3>
+        <p>
+          SecurePad uses <strong>HKDF (HMAC-based Key Derivation Function)</strong> for domain separation, ensuring that even if the server is compromised, your notes remain private.
+        </p>
         <ul>
           <li>
-            <strong>ID Hashing:</strong> Titles are hashed using <code>SHA-256</code>. 
-            The server only sees this hash, never the real title.
+            <strong>Domain Separation:</strong> We derive two distinct values from your title:
+            <ul>
+              <li><strong>Note ID (Public):</strong> Sent to the server as a unique identifier.</li>
+              <li><strong>Encryption Key (Private):</strong> Kept in your browser to encrypt/decrypt data.</li>
+            </ul>
           </li>
           <li>
-            <strong>Client-Side Encryption:</strong> Content is encrypted in your browser using <code>AES-256-GCM</code>.
+            <strong>Cryptographically Independent:</strong> It is mathematically impossible for the server to derive the <em>Encryption Key</em> from the <em>Note ID</em>.
           </li>
           <li>
-            <strong>No Server Decryption:</strong> The server receives only encrypted blobs and cannot recover your data.
+            <strong>AES-256-GCM:</strong> Your content is encrypted locally using the industry-standard AES-256-GCM algorithm before it ever leaves your device.
+          </li>
+          <li>
+            <strong>Zero Knowledge:</strong> We store only encrypted blobs. We never see your titles, your content, or your keys.
           </li>
         </ul>
         
         <hr />
         <p className="text-sm text-gray-500 text-center">
-          Built with ❤️ by <strong>JBot</strong> • v1.1.0
+          Built with ❤️ by <strong>JBot</strong> • v2026.01.30
         </p>
       </div>
     </Layout>
