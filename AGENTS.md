@@ -8,6 +8,7 @@ Zero-knowledge encrypted notepad with real-time collaboration.
 - **Repo:** https://github.com/ycmjbot/securepad
 - **Stack:** Node.js, Express, WebSocket, SQLite, React, Vite, Tailwind
 - **Language:** TypeScript (Client, Server, Shared Package)
+- **Versioning:** Date-based (`YYYY.MM.DD`)
 
 ## Architecture
 
