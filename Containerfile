@@ -20,12 +20,11 @@ RUN CI=true pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Build client
-RUN pnpm --filter client build
+# Build all packages (including shared)
+RUN pnpm build
 
 # Deploy server with all dependencies (resolves pnpm symlinks)
-RUN pnpm --filter server --filter @securepad/shared deploy --prod --legacy /app/server-deploy
-RUN pnpm --filter client --filter @securepad/shared deploy --prod --legacy /app/client-deploy
+RUN pnpm --filter server deploy --prod --legacy /app/server-deploy
 
 # Runtime stage
 FROM node:22-slim
@@ -38,9 +37,8 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 # Copy deployed server (self-contained with real node_modules)
 COPY --from=builder /app/server-deploy /app
 
-# Copy deployed client (self-contained with real node_modules)
-COPY --from=builder /app/client-deploy /app-client
-RUN cp -r /app-client/dist/* /app/public/ && rm -rf /app-client
+# Copy built client
+COPY --from=builder /app/apps/client/dist /app/public
 
 # Environment
 ENV NODE_ENV=production
