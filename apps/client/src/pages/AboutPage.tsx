@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Send } from 'lucide-react';
+import { Lock, Send, Shield, EyeOff, Key, Server } from 'lucide-react';
 import Layout from '../components/Layout';
 
 export default function AboutPage() {
@@ -13,28 +13,79 @@ export default function AboutPage() {
           <Lock className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white m-0">How SecurePad Works</h2>
         </div>
-        <p className="lead">Zero-knowledge encryption for notes and secrets.</p>
+        <p className="lead">Zero-knowledge encryption — your secrets stay yours, always.</p>
 
         <h3>📝 Encrypted Notes</h3>
         <p>
-          Create instant, encrypted notes just by typing a title. 
-          No signups, no passwords, no databases storing your raw text.
+          Create instant encrypted notes just by typing a title. No signups, no passwords, no server storing your raw text.
         </p>
+
+        <div className="not-prose bg-gray-100 dark:bg-gray-800 rounded-xl p-5 my-5">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+            <Key className="w-4 h-4 text-indigo-500" />
+            How Your Title Becomes Your Key
+          </h4>
+          <ol className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center">1</span>
+              <span>You type a title (e.g., "My Secret Recipe")</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center">2</span>
+              <span>Your browser uses <strong>HKDF</strong> (a cryptographic key derivation function) to create <em>two separate values</em> from your title</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center">3</span>
+              <div>
+                <strong>Note ID</strong> → sent to the server as a public identifier<br/>
+                <strong>Encryption Key</strong> → stays in your browser, never transmitted
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center">4</span>
+              <span>Your content is encrypted with <strong>AES-256-GCM</strong> before leaving your device</span>
+            </li>
+          </ol>
+        </div>
+
         <ul>
-          <li><strong>Title = Password:</strong> Your note title is used to derive the encryption key.</li>
-          <li><strong>Real-Time Sync:</strong> Share the title with others to collaborate instantly.</li>
-          <li><strong>Zero Knowledge:</strong> The server only stores encrypted blobs — we can't read your notes.</li>
+          <li><strong>Real-Time Sync:</strong> Share the title with others to collaborate instantly. Anyone with the title can decrypt.</li>
+          <li><strong>Zero Knowledge:</strong> The server only sees an encrypted blob — it cannot read your notes, even if compelled.</li>
         </ul>
 
         <h3>🔐 Send a Secret</h3>
         <p>
-          Need to share a password, API key, or sensitive message? Use <strong>Send</strong> to create 
+          Need to share a password, API key, or sensitive message? <strong>Send</strong> creates 
           a one-time, self-destructing secret link.
         </p>
+
+        <div className="not-prose bg-gray-100 dark:bg-gray-800 rounded-xl p-5 my-5">
+          <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+            <EyeOff className="w-4 h-4 text-purple-500" />
+            The URL Contains the Key
+          </h4>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+            When you create a secret, the decryption key is embedded directly in the URL fragment (the part after <code>#</code>):
+          </p>
+          <code className="block bg-gray-900 text-gray-100 p-3 rounded-lg text-xs overflow-x-auto mb-3">
+            https://securepad.jbot.ycmjason.com/s/abc123#encryption-key-here
+          </code>
+          <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+            <li className="flex gap-2">
+              <Server className="w-4 h-4 flex-shrink-0 text-gray-500" />
+              <span>The server sees <code>/s/abc123</code> — just a lookup ID</span>
+            </li>
+            <li className="flex gap-2">
+              <Shield className="w-4 h-4 flex-shrink-0 text-green-500" />
+              <span>The <code>#encryption-key-here</code> never leaves your browser — it's not sent to any server</span>
+            </li>
+          </ul>
+        </div>
+
         <ul>
           <li><strong>Expiring Links:</strong> Set secrets to expire after 1 hour, 1 day, 7 days, or 30 days.</li>
-          <li><strong>Burn After Reading:</strong> Optionally delete the secret after it's opened once.</li>
-          <li><strong>Shareable URL:</strong> The decryption key is embedded in the link — only people with the link can read it.</li>
+          <li><strong>Burn After Reading:</strong> Optionally delete the secret immediately after it's opened once.</li>
+          <li><strong>No Server Access:</strong> Even SecurePad's server cannot decrypt your secrets — the key never reaches us.</li>
         </ul>
         
         <div className="not-prose my-6">
@@ -47,26 +98,39 @@ export default function AboutPage() {
           </button>
         </div>
 
-        <h3>🔧 The Geeky Stuff</h3>
-        <p>
-          SecurePad uses <strong>HKDF (HMAC-based Key Derivation Function)</strong> for domain separation, ensuring that even if the server is compromised, your notes remain private.
-        </p>
+        <h3>🔒 Security Guarantees</h3>
+        <div className="not-prose grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+            <h4 className="font-semibold text-green-800 dark:text-green-400 text-sm mb-1">What We Store</h4>
+            <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+              <li>✓ Encrypted blobs (indecipherable without keys)</li>
+              <li>✓ Expiration timestamps</li>
+              <li>✓ Public note IDs only</li>
+            </ul>
+          </div>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <h4 className="font-semibold text-red-800 dark:text-red-400 text-sm mb-1">What We Never See</h4>
+            <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+              <li>✗ Your titles or passwords</li>
+              <li>✗ Your note content</li>
+              <li>✗ Encryption keys (ever)</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>🔧 Technical Details</h3>
         <ul>
           <li>
-            <strong>Domain Separation:</strong> We derive two distinct values from your title:
-            <ul>
-              <li><strong>Note ID (Public):</strong> Sent to the server as a unique identifier.</li>
-              <li><strong>Encryption Key (Private):</strong> Kept in your browser to encrypt/decrypt data.</li>
-            </ul>
+            <strong>HKDF-SHA256:</strong> We use HMAC-based Extract-and-Expand Key Derivation Function for cryptographically secure domain separation.
           </li>
           <li>
-            <strong>Cryptographically Independent:</strong> It is mathematically impossible for the server to derive the <em>Encryption Key</em> from the <em>Note ID</em>.
+            <strong>Independent Derivation:</strong> The Note ID and Encryption Key are mathematically unrelated — knowing one reveals nothing about the other.
           </li>
           <li>
-            <strong>AES-256-GCM:</strong> Your content is encrypted locally using the industry-standard AES-256-GCM algorithm before it ever leaves your device.
+            <strong>AES-256-GCM:</strong> Industry-standard authenticated encryption with 256-bit keys and built-in integrity checking.
           </li>
           <li>
-            <strong>Zero Knowledge:</strong> We store only encrypted blobs. We never see your titles, your content, or your keys.
+            <strong>Client-Side Only:</strong> All encryption and decryption happens in your browser. Our server is just a dumb encrypted blob store.
           </li>
         </ul>
         

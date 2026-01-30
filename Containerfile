@@ -23,16 +23,6 @@ COPY . .
 # Build all packages (including shared)
 RUN pnpm build
 
-# Deploy server with all dependencies (resolves pnpm symlinks)
-RUN mkdir -p /app/server-deploy && \
-    cp apps/server/package.json /app/server-deploy/ && \
-    cp -r apps/server/dist /app/server-deploy/ && \
-    mkdir -p /app/packages-temp && \
-    cp -r packages/shared /app/packages-temp/ && \
-    cd /app/server-deploy && \
-    CI=true pnpm install --prod --no-frozen-lockfile && \
-    rm -rf /app/packages-temp
-
 # Runtime stage
 FROM node:22-slim
 
@@ -41,11 +31,31 @@ WORKDIR /app
 # Install curl for healthchecks
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Copy deployed server (self-contained with real node_modules)
-COPY --from=builder /app/server-deploy /app
+# Copy server built files
+COPY --from=builder /app/apps/server/dist /app/dist
+COPY --from=builder /app/apps/server/package.json /app/package.json
 
-# Copy built client
-COPY --from=builder /app/apps/client/dist /app/public
+# Copy server's node_modules (has symlinks)
+COPY --from=builder /app/apps/server/node_modules /app/node_modules
+
+# Copy root .pnpm store
+COPY --from=builder /app/node_modules/.pnpm /app/node_modules/.pnpm
+
+# Fix the symlinks - they point to ../../../node_modules/.pnpm but should point to ./.pnpm
+# The symlinks in apps/server/node_modules point to ../../node_modules/.pnpm 
+# which from /app/node_modules should be ./.pnpm
+RUN for link in /app/node_modules/*; do \
+      if [ -L "$link" ]; then \
+        target=$(readlink "$link"); \
+        # Replace ../../../node_modules/.pnpm with ./.pnpm \
+        newtarget=$(echo "$target" | sed 's|../../../node_modules/.pnpm|./.pnpm|g'); \
+        rm "$link"; \
+        ln -s "$newtarget" "$link"; \
+      fi \
+    done
+
+# Copy built client to dist/public (server expects it relative to __dirname)
+COPY --from=builder /app/apps/client/dist /app/dist/public
 
 # Environment
 ENV NODE_ENV=production
@@ -59,4 +69,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "dist/server.js"]
