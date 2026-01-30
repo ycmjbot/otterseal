@@ -1,4 +1,11 @@
-export async function getMasterKey(seed: string): Promise<CryptoKey> {
+const HKDF_SALT = "SecurePad";
+const HKDF_INFO_ID = "ID";
+const HKDF_INFO_KEY = "KEY";
+
+/**
+ * Imports the seed as a CryptoKey suitable for HKDF derivation.
+ */
+async function getHKDFMasterKey(seed: string): Promise<CryptoKey> {
   const enc = new TextEncoder();
   const masterSecret = enc.encode(seed);
   return await crypto.subtle.importKey(
@@ -10,10 +17,19 @@ export async function getMasterKey(seed: string): Promise<CryptoKey> {
   );
 }
 
+/**
+ * Derives a deterministic ID for a given title.
+ * 
+ * We use HKDF for "Domain Separation". This ensures that the ID sent to the server 
+ * is cryptographically decoupled from the encryption key. Even if the server 
+ * knows the ID, it cannot derive the Key because they are derived using different 
+ * 'info' strings ("ID" vs "KEY").
+ */
 export async function hashTitle(title: string): Promise<string> {
-  const masterKey = await getMasterKey(title);
-  const salt = new TextEncoder().encode('SecurePad');
-  const info = new TextEncoder().encode('ID');
+  const masterKey = await getHKDFMasterKey(title);
+  const enc = new TextEncoder();
+  const salt = enc.encode(HKDF_SALT);
+  const info = enc.encode(HKDF_INFO_ID);
 
   const derivedBits = await crypto.subtle.deriveBits(
     {
@@ -30,10 +46,17 @@ export async function hashTitle(title: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+/**
+ * Derives a 256-bit AES-GCM encryption key from the title.
+ * 
+ * Uses HKDF with domain separation (info="KEY") to ensure this key remains 
+ * private even if the derived ID is known to the server.
+ */
 export async function deriveKey(title: string): Promise<CryptoKey> {
-  const masterKey = await getMasterKey(title);
-  const salt = new TextEncoder().encode('SecurePad');
-  const info = new TextEncoder().encode('KEY');
+  const masterKey = await getHKDFMasterKey(title);
+  const enc = new TextEncoder();
+  const salt = enc.encode(HKDF_SALT);
+  const info = enc.encode(HKDF_INFO_KEY);
 
   return await crypto.subtle.deriveKey(
     {
@@ -49,6 +72,10 @@ export async function deriveKey(title: string): Promise<CryptoKey> {
   );
 }
 
+/**
+ * Encrypts content using AES-GCM with a random 12-byte IV.
+ * Returns a JSON string containing the base64-encoded IV and ciphertext.
+ */
 export async function encryptNote(content: string, key: CryptoKey): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(content);
@@ -66,6 +93,11 @@ export async function encryptNote(content: string, key: CryptoKey): Promise<stri
   return JSON.stringify({ iv: ivB64, data: cipherB64 });
 }
 
+/**
+ * Decrypts an AES-GCM encrypted note.
+ * Expects a JSON string with base64 'iv' and 'data'.
+ * Returns empty string on failure.
+ */
 export async function decryptNote(encryptedJson: string, key: CryptoKey): Promise<string> {
   try {
     if (!encryptedJson) return "";
