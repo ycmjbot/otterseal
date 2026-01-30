@@ -24,7 +24,13 @@ COPY . .
 RUN pnpm build
 
 # Deploy server with all dependencies (resolves pnpm symlinks)
-RUN pnpm --filter server deploy --prod --legacy /app/server-deploy
+RUN mkdir -p /app/server-deploy && \
+    cp apps/server/package.json /app/server-deploy/ && \
+    cp -r apps/server/dist /app/server-deploy/ && \
+    cp -r packages/shared /app/packages/shared && \
+    cd /app/server-deploy && \
+    pnpm install --prod --no-frozen-lockfile && \
+    rm -rf /app/packages/shared
 
 # Runtime stage
 FROM node:22-slim
