@@ -270,7 +270,7 @@ export default function SendViewPage() {
                 <button onClick={handleCopyLink} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                   {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </button>
-                {navigator.share && (
+                {typeof navigator.share === 'function' && (
                   <button onClick={handleShare} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                     <Share2 className="w-4 h-4" />
                   </button>

@@ -9,12 +9,15 @@ export default function useStarredNotes() {
     try {
       const saved = localStorage.getItem('starred');
       if (!saved) return [];
-      const parsed = JSON.parse(saved);
+      const parsed = JSON.parse(saved) as unknown;
       // Compatibility with old array of strings
-      if (Array.isArray(parsed) && typeof parsed[0] === 'string') {
-        return parsed.map((title: string) => ({ title }));
+      if (Array.isArray(parsed)) {
+        if (typeof parsed[0] === 'string') {
+          return parsed.map((title: string) => ({ title }));
+        }
+        return parsed as StarredNote[];
       }
-      return parsed;
+      return [];
     } catch {
       return [];
     }

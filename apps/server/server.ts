@@ -224,7 +224,7 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
   if (!rooms.has(id)) {
     rooms.set(id, new Set());
   }
-  rooms.get(id)!.add(ws);
+  rooms.get(id)?.add(ws);
 
   console.log(`Client connected to room ${id}`);
 

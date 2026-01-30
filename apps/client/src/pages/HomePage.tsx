@@ -7,7 +7,7 @@ export default function HomePage() {
   const [inputTitle, setInputTitle] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = inputTitle.trim();
     if (trimmed) {

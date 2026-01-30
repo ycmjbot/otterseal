@@ -1,32 +1,45 @@
 # SecurePad
 
-A secure, zero-knowledge, real-time sync notepad.
+A secure, zero-knowledge, real-time sync notepad. Write notes that are encrypted in your browser before they ever reach the server. Share them with a link, or send self-destructing secrets.
+
+## Features
+
+- **Zero-Knowledge Encryption**: Your notes are encrypted with AES-256-GCM using a key derived from the title. The server never sees the key.
+- **Real-Time Sync**: Collaborate on notes in real-time across multiple devices using WebSockets.
+- **Send Secrets**: Create one-time links that self-destruct after reading (or after a set time).
+- **Offline Capable**: Works even if you disconnect briefly.
+- **Markdown Support**: Rich text editing with Markdown shortcuts.
+- **Dark Mode**: Automatically respects your system preference or toggle manually.
 
 ## Security Architecture
 
-SecurePad uses a zero-knowledge architecture. The server never sees your encryption key.
+SecurePad uses **HKDF (HMAC-based Key Derivation Function)** to cryptographically separate the database ID from the encryption key.
 
-### Key Derivation (HKDF)
-We use **HKDF (HMAC-based Key Derivation Function)** to cryptographically separate the Note ID (public) from the Encryption Key (private) using the Title as the master secret.
+1.  **Master Secret**: `HKDF-Extract(Title)`
+2.  **Note ID (Public)**: `HKDF-Expand(Master, info="ID", salt="SecurePad")`
+    *   Sent to the server as the database lookup key.
+    *   The server *cannot* derive the encryption key from this ID.
+3.  **Encryption Key (Private)**: `HKDF-Expand(Master, info="KEY", salt="SecurePad")`
+    *   Kept in the browser (never sent to server).
+    *   Used to encrypt content via **AES-256-GCM**.
 
-1.  **Master Secret**: Derived from the Note Title.
-2.  **Note ID**: `HKDF(Master, salt="SecurePad", info="ID")`
-    *   This is sent to the server to identify the note.
-    *   The server *cannot* derive the Key from this ID.
-3.  **Encryption Key**: `HKDF(Master, salt="SecurePad", info="KEY")`
-    *   This stays in your browser.
-    *   Used to encrypt/decrypt content (AES-256-GCM).
+This ensures that even if the server database is compromised, an attacker (or the server admin) cannot decrypt any notes without guessing the exact title.
 
-This ensures that even if the server is compromised, your notes remain encrypted and unreadable.
+## Project Structure
 
-## Tech Stack
+This is a **pnpm monorepo** containing:
 
-- **Monorepo**: pnpm workspaces
-- **Frontend**: React, Vite, TypeScript, Tailwind CSS
-- **Backend**: Node.js, Express, WebSocket, SQLite (node:sqlite)
-- **Shared**: TypeScript library for crypto logic
+- `apps/client`: React frontend (Vite + TypeScript + Tailwind)
+- `apps/server`: Node.js backend (Express + WebSocket + SQLite)
+- `packages/shared`: Shared crypto logic (TypeScript)
 
 ## Development
+
+### Prerequisites
+- Node.js v20+
+- pnpm
+
+### Setup
 
 1.  **Install Dependencies**:
     ```bash
@@ -37,11 +50,29 @@ This ensures that even if the server is compromised, your notes remain encrypted
     ```bash
     pnpm dev
     ```
+    This starts both the client and server concurrently.
     - Client: http://localhost:5173
     - Server: http://localhost:3000
 
-## Build
+### Build
+
+To build all packages for production:
 
 ```bash
 pnpm build
 ```
+
+### Deployment
+
+The app is deployed via **Otterway** (Podman + Caddy).
+
+1.  Build the image:
+    ```bash
+    pnpm build
+    podman build -t securepad .
+    ```
+2.  The `app.otterway.json` handles the container configuration.
+
+## License
+
+MIT
