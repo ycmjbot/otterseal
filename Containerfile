@@ -24,7 +24,8 @@ COPY . .
 RUN pnpm --filter client build
 
 # Deploy server with all dependencies (resolves pnpm symlinks)
-RUN pnpm --filter server deploy --prod --force-legacy-deploy /app/server-deploy
+RUN pnpm --filter server deploy --prod /app/server-deploy
+RUN pnpm --filter client deploy --prod /app/client-deploy
 
 # Runtime stage
 FROM node:22-slim
@@ -37,8 +38,9 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 # Copy deployed server (self-contained with real node_modules)
 COPY --from=builder /app/server-deploy /app
 
-# Copy built client
-COPY --from=builder /app/apps/client/dist /app/public
+# Copy deployed client (self-contained with real node_modules)
+COPY --from=builder /app/client-deploy /app-client
+RUN cp -r /app-client/dist/* /app/public/ && rm -rf /app-client
 
 # Environment
 ENV NODE_ENV=production
