@@ -1,34 +1,47 @@
-# Public Encrypted Notepad
+# SecurePad
 
-A zero-knowledge, real-time sync notepad.
+A secure, zero-knowledge, real-time sync notepad.
+
+## Security Architecture
+
+SecurePad uses a zero-knowledge architecture. The server never sees your encryption key.
+
+### Key Derivation (HKDF)
+We use **HKDF (HMAC-based Key Derivation Function)** to cryptographically separate the Note ID (public) from the Encryption Key (private) using the Title as the master secret.
+
+1.  **Master Secret**: Derived from the Note Title.
+2.  **Note ID**: `HKDF(Master, salt="SecurePad", info="ID")`
+    *   This is sent to the server to identify the note.
+    *   The server *cannot* derive the Key from this ID.
+3.  **Encryption Key**: `HKDF(Master, salt="SecurePad", info="KEY")`
+    *   This stays in your browser.
+    *   Used to encrypt/decrypt content (AES-256-GCM).
+
+This ensures that even if the server is compromised, your notes remain encrypted and unreadable.
 
 ## Tech Stack
-- **Frontend**: React, Vite, Tailwind CSS
-- **Backend**: Node.js (Express + WebSocket), SQLite (node:sqlite)
-- **Encryption**: Client-side AES-256-GCM (Web Crypto API)
 
-## Setup & Run
+- **Monorepo**: pnpm workspaces
+- **Frontend**: React, Vite, TypeScript, Tailwind CSS
+- **Backend**: Node.js, Express, WebSocket, SQLite (node:sqlite)
+- **Shared**: TypeScript library for crypto logic
 
-1. **Install Dependencies**
-   ```bash
-   npm run install:all
-   ```
-   (Or install manually in `root`, `server/`, and `client/`)
+## Development
 
-2. **Start Application**
-   ```bash
-   npm start
-   ```
-   This starts:
-   - Server on `http://localhost:3000`
-   - Client on `http://localhost:5173`
+1.  **Install Dependencies**:
+    ```bash
+    pnpm install
+    ```
 
-3. **Open Browser**
-   Go to `http://localhost:5173`.
-   Enter a title (e.g., "secret-plan") and click "Open Note".
-   Share the URL (or just the title) with someone else to collaborate.
+2.  **Start Development Server**:
+    ```bash
+    pnpm dev
+    ```
+    - Client: http://localhost:5173
+    - Server: http://localhost:3000
 
-## Architecture
-- **Zero-Knowledge**: Server stores only `SHA-256(Title)` as ID and `AES-256(Content, Key=Title)` as content. Server cannot decrypt notes.
-- **Real-time**: WebSockets broadcast encrypted updates.
-- **Persistence**: SQLite database with Write-Ahead Logging (WAL) via `better-sqlite3` compatible `node:sqlite`.
+## Build
+
+```bash
+pnpm build
+```

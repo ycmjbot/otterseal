@@ -1,19 +1,18 @@
-import express from 'express';
-import { WebSocketServer } from 'ws';
+import express, { Request, Response, NextFunction } from 'express';
+import { WebSocketServer, WebSocket } from 'ws';
 import { createServer } from 'http';
 import { DatabaseSync } from 'node:sqlite';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Debug logging
 const logFile = process.env.NODE_ENV === 'production' ? '/app/data/debug.log' : 'debug.log';
-function log(msg) {
+function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}\n`;
   console.log(msg);
   try { fs.appendFileSync(logFile, line); } catch (e) {}
@@ -26,7 +25,7 @@ app.use(cors());
 app.use(express.json());
 
 // Security headers
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Referrer-Policy', 'no-referrer');
   // No-cache for /send/ routes
   if (req.path.startsWith('/send/') || req.path.startsWith('/api/send')) {
@@ -44,7 +43,7 @@ const dbPath = process.env.NODE_ENV === 'production'
   ? '/app/data/database.sqlite' 
   : 'database.sqlite';
 
-let db;
+let db: any;
 try {
   // Ensure directory exists if needed or just rely on volume mapping
   db = new DatabaseSync(dbPath);
@@ -59,18 +58,14 @@ try {
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN expires_at INTEGER`);
     log('Added expires_at column');
-  } catch (e) {
-    // Column already exists
-  }
+  } catch (e) {}
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN burn_after_reading INTEGER DEFAULT 0`);
     log('Added burn_after_reading column');
-  } catch (e) {
-    // Column already exists
-  }
+  } catch (e) {}
   
   log('Database initialized successfully');
-} catch (e) {
+} catch (e: any) {
   log(`Database initialization failed: ${e.message}\n${e.stack}`);
   process.exit(1);
 }
@@ -91,19 +86,18 @@ setInterval(() => {
     if (result.changes > 0) {
       log(`Cleaned up ${result.changes} expired notes`);
     }
-  } catch (e) {
+  } catch (e: any) {
     log(`Cleanup error: ${e.message}`);
   }
 }, 60 * 1000);
 
 // Helper: Check if note is expired
-function isExpired(note) {
+function isExpired(note: any) {
   return note.expires_at && note.expires_at < Date.now();
 }
 
 // REST API for Send feature
-// GET /api/notes/:id - Get note content (with optional peek mode)
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req: Request, res: Response) => {
   const { id } = req.params;
   const peek = req.query.peek === '1';
   
@@ -113,7 +107,6 @@ app.get('/api/notes/:id', (req, res) => {
   
   try {
     if (peek) {
-      // Metadata only - don't return content, don't delete
       const note = getNoteMetadata.get(id);
       if (!note) {
         return res.status(404).json({ error: 'Not found' });
@@ -128,7 +121,6 @@ app.get('/api/notes/:id', (req, res) => {
         burnAfterReading: note.burn_after_reading === 1
       });
     } else {
-      // Full content - may delete if burn_after_reading
       const note = getNote.get(id);
       if (!note) {
         return res.status(404).json({ error: 'Not found' });
@@ -144,22 +136,20 @@ app.get('/api/notes/:id', (req, res) => {
         burnAfterReading: note.burn_after_reading === 1
       };
       
-      // Burn after reading: delete immediately after returning
       if (note.burn_after_reading === 1) {
         deleteNote.run(id);
-        log(`Burned note ${id.substring(0, 8)}...`);
+        log(`Burned note ${id.slice(0, 8)}...`);
       }
       
       return res.json(response);
     }
-  } catch (e) {
+  } catch (e: any) {
     log(`API error: ${e.message}`);
     return res.status(500).json({ error: 'Server error' });
   }
 });
 
-// POST /api/notes/:id - Create/update note
-app.post('/api/notes/:id', (req, res) => {
+app.post('/api/notes/:id', (req: Request, res: Response) => {
   const { id } = req.params;
   const { content, expiresAt, burnAfterReading } = req.body;
   
@@ -181,34 +171,36 @@ app.post('/api/notes/:id', (req, res) => {
       burnAfterReading ? 1 : 0
     );
     return res.json({ success: true });
-  } catch (e) {
+  } catch (e: any) {
     log(`API error: ${e.message}`);
     return res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Serve static files from the client build directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// HTTP Server & WS
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
-const rooms = new Map(); // Map<id, Set<ws>>
+interface ExtendedWebSocket extends WebSocket {
+  roomId?: string;
+}
 
-function broadcast(id, sender, data) {
+const rooms = new Map<string, Set<ExtendedWebSocket>>();
+
+function broadcast(id: string, sender: ExtendedWebSocket, data: any) {
   const room = rooms.get(id);
   if (room) {
     room.forEach(client => {
-      if (client !== sender && client.readyState === 1) {
+      if (client !== sender && client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(data));
       }
     });
   }
 }
 
-wss.on('connection', (ws, req) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+wss.on('connection', (ws: ExtendedWebSocket, req) => {
+  const url = new URL(req.url || '', `http://${req.headers.host}`);
   const id = url.searchParams.get('id');
 
   if (!id || id.length > MAX_ID_LENGTH) {
@@ -220,23 +212,21 @@ wss.on('connection', (ws, req) => {
   if (!rooms.has(id)) {
     rooms.set(id, new Set());
   }
-  rooms.get(id).add(ws);
+  rooms.get(id)!.add(ws);
 
   console.log(`Client connected to room ${id}`);
 
-  // Send current state
   const note = getNote.get(id);
   if (note && !isExpired(note)) {
     ws.send(JSON.stringify({ type: 'init', content: note.content }));
   } else {
-    // Delete if expired
     if (note && isExpired(note)) {
       deleteNote.run(id);
     }
     ws.send(JSON.stringify({ type: 'init', content: '' }));
   }
 
-  ws.on('message', (message) => {
+  ws.on('message', (message: string) => {
     try {
       const data = JSON.parse(message);
       if (data.type === 'update') {
@@ -247,8 +237,6 @@ wss.on('connection', (ws, req) => {
           return;
         }
 
-        // Persistence (Last-Writer-Wins)
-        // For WebSocket updates, preserve existing expiry/burn settings or use defaults
         const existing = getNoteMetadata.get(id);
         upsertNote.run(
           id,
@@ -257,7 +245,6 @@ wss.on('connection', (ws, req) => {
           existing?.burn_after_reading || 0
         );
         
-        // Broadcast
         broadcast(id, ws, { type: 'update', content: data.content });
       }
     } catch (e) {
@@ -276,12 +263,11 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// SPA Fallback
-app.get('*', (req, res) => {
+app.get('*', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

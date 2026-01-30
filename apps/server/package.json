@@ -4,12 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "tsx server.ts",
+    "dev": "tsx --watch server.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "cors": "catalog:",
     "express": "catalog:",
+    "tsx": "^4.21.0",
     "ws": "catalog:"
+  },
+  "devDependencies": {
+    "@types/cors": "catalog:",
+    "@types/express": "catalog:",
+    "@types/ws": "catalog:",
+    "typescript": "^5.9.3"
   }
 }
