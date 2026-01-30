@@ -30,7 +30,7 @@ RUN mkdir -p /app/server-deploy && \
     mkdir -p /app/packages-temp && \
     cp -r packages/shared /app/packages-temp/ && \
     cd /app/server-deploy && \
-    pnpm install --prod --no-frozen-lockfile && \
+    CI=true pnpm install --prod --no-frozen-lockfile && \
     rm -rf /app/packages-temp
 
 # Runtime stage
