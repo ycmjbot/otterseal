@@ -11,7 +11,7 @@
     "build": "echo 'No build needed'"
   },
   "dependencies": {
-    "@securepad/shared": "workspace:*",
+    "@securepad/shared": "workspace:^",
     "commander": "^13.1.0"
   },
   "engines": {

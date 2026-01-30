@@ -16,7 +16,7 @@
     "@lexical/markdown": "catalog:",
     "@lexical/react": "catalog:",
     "@lexical/rich-text": "catalog:",
-    "@securepad/shared": "workspace:*",
+    "@securepad/shared": "workspace:^",
     "@tailwindcss/typography": "catalog:",
     "clsx": "catalog:",
     "lexical": "catalog:",
