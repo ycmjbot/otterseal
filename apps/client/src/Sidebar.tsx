@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { X, BookOpen, Github, Send } from 'lucide-react';
+import { X, BookOpen, Github, Send, Home } from 'lucide-react';
 import clsx from 'clsx';
 
 interface StarredNote {
@@ -53,6 +53,14 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
              {/* Navigation */}
              <div className="space-y-1">
+                <Link 
+                    to="/" 
+                    onClick={() => onClose()}
+                    className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <Home className="w-4 h-4" />
+                    Home
+                </Link>
                 <Link 
                     to="/send" 
                     onClick={() => onClose()}
