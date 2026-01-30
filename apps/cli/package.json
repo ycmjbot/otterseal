@@ -1,6 +1,6 @@
 {
   "name": "@securepad/cli",
-  "version": "1.0.0",
+  "version": "2026.01.30",
   "description": "Zero-knowledge encrypted notepad CLI",
   "type": "module",
   "bin": {
