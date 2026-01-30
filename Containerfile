@@ -24,8 +24,8 @@ COPY . .
 RUN pnpm --filter client build
 
 # Deploy server with all dependencies (resolves pnpm symlinks)
-RUN pnpm --filter server deploy --prod /app/server-deploy
-RUN pnpm --filter client deploy --prod /app/client-deploy
+RUN pnpm --filter server deploy --prod --legacy /app/server-deploy
+RUN pnpm --filter client deploy --prod --legacy /app/client-deploy
 
 # Runtime stage
 FROM node:22-slim
