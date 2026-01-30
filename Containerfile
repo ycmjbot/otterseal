@@ -27,7 +27,8 @@ RUN pnpm build
 RUN mkdir -p /app/server-deploy && \
     cp apps/server/package.json /app/server-deploy/ && \
     cp -r apps/server/dist /app/server-deploy/ && \
-    cp -r packages/shared /app/packages/shared && \
+    mkdir -p /app/packages && \
+    cp -r packages/shared /app/packages/ && \
     cd /app/server-deploy && \
     pnpm install --prod --no-frozen-lockfile && \
     rm -rf /app/packages/shared
