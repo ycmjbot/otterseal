@@ -63,6 +63,15 @@ try {
     db.exec(`ALTER TABLE notes ADD COLUMN burn_after_reading INTEGER DEFAULT 0`);
     log('Added burn_after_reading column');
   } catch (e) {}
+  // Migration: Add created_at and updated_at columns if they don't exist
+  try {
+    db.exec(`ALTER TABLE notes ADD COLUMN created_at INTEGER`);
+    log('Added created_at column');
+  } catch (e) {}
+  try {
+    db.exec(`ALTER TABLE notes ADD COLUMN updated_at INTEGER`);
+    log('Added updated_at column');
+  } catch (e) {}
   
   log('Database initialized successfully');
 } catch (e: any) {
@@ -70,11 +79,11 @@ try {
   process.exit(1);
 }
 
-const getNote = db.prepare('SELECT content, expires_at, burn_after_reading FROM notes WHERE id = ?');
-const getNoteMetadata = db.prepare('SELECT expires_at, burn_after_reading FROM notes WHERE id = ?');
+const getNote = db.prepare('SELECT content, expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?');
+const getNoteMetadata = db.prepare('SELECT expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?');
 const upsertNote = db.prepare(`
-  INSERT INTO notes (id, content, expires_at, burn_after_reading) VALUES (?, ?, ?, ?)
-  ON CONFLICT(id) DO UPDATE SET content = excluded.content, expires_at = excluded.expires_at, burn_after_reading = excluded.burn_after_reading
+  INSERT INTO notes (id, content, expires_at, burn_after_reading, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET content = excluded.content, expires_at = excluded.expires_at, burn_after_reading = excluded.burn_after_reading, updated_at = excluded.updated_at
 `);
 const deleteNote = db.prepare('DELETE FROM notes WHERE id = ?');
 const deleteExpiredNotes = db.prepare('DELETE FROM notes WHERE expires_at IS NOT NULL AND expires_at < ?');
@@ -84,11 +93,15 @@ interface Note {
   content: string;
   expires_at: number | null;
   burn_after_reading: number;
+  created_at: number | null;
+  updated_at: number | null;
 }
 
 interface NoteMetadata {
   expires_at: number | null;
   burn_after_reading: number;
+  created_at: number | null;
+  updated_at: number | null;
 }
 
 // Cleanup expired notes every minute
@@ -176,11 +189,14 @@ app.post('/api/notes/:id', (req: Request, res: Response) => {
   }
   
   try {
+    const now = Date.now();
     upsertNote.run(
       id,
       content,
       expiresAt || null,
-      burnAfterReading ? 1 : 0
+      burnAfterReading ? 1 : 0,
+      now,
+      now
     );
     return res.json({ success: true });
   } catch (e: any) {
@@ -250,11 +266,14 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
         }
 
         const existing = getNoteMetadata.get(id) as NoteMetadata | undefined;
+        const now = Date.now();
         upsertNote.run(
           id,
           data.content,
           existing?.expires_at || null,
-          existing?.burn_after_reading || 0
+          existing?.burn_after_reading || 0,
+          existing?.created_at || now,
+          now
         );
         
         broadcast(id, ws, { type: 'update', content: data.content });

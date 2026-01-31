@@ -2,7 +2,7 @@
   "name": "securepad",
   "type": "container",
   "description": "SecurePad - Zero-Knowledge Encrypted Notepad",
-  "domain": "securepad.jbot.ycmjason.com",
+  "domain": "securepad.ycmj.bot",
   "port": 3000,
   "internalPort": 3000,
   "resources": {
