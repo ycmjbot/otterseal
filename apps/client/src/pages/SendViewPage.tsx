@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { hashTitle, deriveKey, decryptNote } from '@securepad/shared';
+import { hashTitle, deriveKey, decryptNote } from '@otterseal/core';
 import {
   Mail,
   MailOpen,
@@ -120,8 +120,8 @@ export default function SendViewPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'SecurePad Secret',
-          text: 'I sent you a secure, encrypted message on SecurePad. It self-destructs after reading! 🤫',
+          title: 'OtterSeal Secret',
+          text: 'I sent you a secure, encrypted message on OtterSeal. It self-destructs after reading! 🤫',
           url: shareUrl,
         });
       } catch (err) {

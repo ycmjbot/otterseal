@@ -1,25 +1,25 @@
-# AGENTS.md — Securepad
+# AGENTS.md — OtterSeal
 
-Zero-knowledge encrypted notepad with real-time collaboration.
+🦦 Zero-knowledge encrypted notepad with real-time collaboration.
 
 ## Overview
 
-- **Live:** https://securepad.jbot.ycmjason.com
-- **Repo:** https://github.com/ycmjbot/securepad
+- **Live:** https://otterseal.ycmj.bot
+- **Repo:** https://github.com/ycmjbot/otterseal
 - **Stack:** Node.js, Express, WebSocket, SQLite, React, Vite, Tailwind
-- **Language:** TypeScript (Client, Server, Shared Package)
-- **Versioning:** Date-based (`YYYY.MM.DD`)
+- **Language:** TypeScript (Client, Server, Core Package)
+- **Versioning:** Semver (`1.0.0`)
 
 ## Architecture
 
 ```
-securepad/
+otterseal/
 ├── apps/
 │   ├── client/          # React frontend (Vite)
 │   ├── server/          # Express + WebSocket backend
 │   └── cli/             # Command-line interface
 ├── packages/
-│   └── shared/          # Crypto functions (used by all apps)
+│   └── core/            # Crypto functions (used by all apps)
 ├── data/                # SQLite database (gitignored, volume-mounted)
 ├── Containerfile        # Production container build
 └── app.otterway.json    # Deployment config
@@ -43,8 +43,8 @@ Encryption Key    = HKDF_Expand(MasterSecret, info="KEY", salt="SecurePad")
 - **Result:** The server knows the ID but cannot mathematically derive the Key.
 
 **Key files:**
-- `packages/shared/src/index.ts` — `hashTitle()`, `deriveKey()`, `encryptNote()`, `decryptNote()`
-- Constants: `HKDF_SALT="SecurePad"`, `HKDF_INFO_ID="ID"`, `HKDF_INFO_KEY="KEY"`
+- `packages/core/src/index.ts` — `hashTitle()`, `deriveKey()`, `encryptNote()`, `decryptNote()`
+- Constants: `HKDF_SALT="SecurePad"` (kept for backward compatibility), `HKDF_INFO_ID="ID"`, `HKDF_INFO_KEY="KEY"`
 
 ## Server API
 
@@ -76,17 +76,17 @@ Encryption Key    = HKDF_Expand(MasterSecret, info="KEY", salt="SecurePad")
 
 ```bash
 # Run from monorepo root
-node apps/cli/bin/securepad.js <command>
+node apps/cli/bin/oseal.js <command>
 
 # Commands
-read <title>              # Decrypt and print note
-write <title> [content]   # Encrypt and save (stdin supported)
-send [content]            # Create one-time secret link
-receive <url>             # Fetch one-time secret
-delete <title>            # Delete note
+note read <title>              # Decrypt and print note
+note edit <title> [content]    # Encrypt and save (stdin supported)
+secret send [content]          # Create one-time secret link
+secret reveal <url>            # Fetch one-time secret
+secret peek <url>              # Check if secret exists
 ```
 
-**Options:** `--expires <duration>`, `--burn`, `--no-burn`, `--peek`
+**Options:** `--expires <duration>`, `--self-destruct`, `--editor`, `--peek`
 
 ## Client Features
 
@@ -121,11 +121,11 @@ Deployed via **Otterway** (Podman + Quadlet + Caddy).
 
 ```bash
 # From server
-otterway sync securepad
+otterway sync otterseal
 ```
 
 - Container runs on port 3000
-- Caddy reverse proxies from `securepad.jbot.ycmjason.com`
+- Caddy reverse proxies from `otterseal.ycmj.bot`
 - SQLite database persisted in `./data/` (volume mount)
 
 ## Database
@@ -147,15 +147,15 @@ Expired notes are cleaned up every 60 seconds.
 
 **Add a new API endpoint:** Edit `apps/server/server.ts`
 
-**Change crypto:** Edit `packages/shared/src/index.ts` (affects all apps)
+**Change crypto:** Edit `packages/core/src/index.ts` (affects all apps)
 
-**Add CLI command:** Edit `apps/cli/bin/securepad.js`
+**Add CLI command:** Edit `apps/cli/bin/oseal.js`
 
 **Update client UI:** Edit `apps/client/src/`
 
 **Rebuild & deploy:**
 ```bash
-cd ~/apps/securepad
+cd ~/apps/otterseal
 pnpm build
-otterway sync securepad
+otterway sync otterseal
 ```

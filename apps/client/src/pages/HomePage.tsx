@@ -30,7 +30,7 @@ export default function HomePage() {
             </div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-            Welcome to SecurePad
+            Welcome to OtterSeal
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             Zero-knowledge encrypted notes. No signup. No passwords.<br />

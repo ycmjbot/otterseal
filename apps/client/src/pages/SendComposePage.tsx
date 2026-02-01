@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { hashTitle, deriveKey, encryptNote } from '@securepad/shared';
+import { hashTitle, deriveKey, encryptNote } from '@otterseal/core';
 import { Send, Clock, Flame, Loader2 } from 'lucide-react';
 import Layout from '../components/Layout';
 

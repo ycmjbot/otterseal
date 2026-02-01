@@ -1,7 +1,7 @@
 {
-  "name": "@securepad/shared",
-  "version": "2026.01.30",
-  "private": true,
+  "name": "@otterseal/core",
+  "version": "1.0.0",
+  "description": "OtterSeal shared cryptography utilities",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -12,10 +12,13 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "echo 'Core module ready'",
+    "build": "pkgroll --cwd ."
   },
   "devDependencies": {
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

@@ -1,6 +1,6 @@
-# @securepad/cli
+# @otterseal/cli
 
-Zero-knowledge encrypted notepad CLI for [securepad](https://securepad.jbot.ycmjason.com).
+🦦 OtterSeal - Zero-knowledge encrypted secrets CLI
 
 ## Installation
 
@@ -9,76 +9,63 @@ Zero-knowledge encrypted notepad CLI for [securepad](https://securepad.jbot.ycmj
 pnpm install
 
 # Or install globally (when published)
-npm install -g @securepad/cli
+npm install -g @otterseal/cli
 ```
 
 ## Usage
 
-### Read a note
+### Note Commands
 
 ```bash
-securepad read "my-note-title"
-securepad get "my-note-title" > output.txt
+# Read a note
+oseal note read "my-note-title"
+
+# Create or edit a note (opens $EDITOR if no content)
+oseal note edit "my-note-title" "Hello, world!"
+echo "Hello, world!" | oseal note edit "my-note-title"
 ```
 
-### Write a note
+### Secret Commands
 
 ```bash
-# Direct content
-securepad write "my-note-title" "Hello, world!"
-
-# From stdin
-echo "Hello, world!" | securepad write "my-note-title"
-cat file.txt | securepad write "my-note-title"
-
-# With options
-securepad write "my-note-title" "Secret" --expires 1h --burn
-```
-
-### Send a one-time secret
-
-```bash
-# Create a burn-after-reading secret link
-securepad send "This is a secret message"
+# Create a one-time secret link
+oseal secret send "This is a secret message"
 
 # With custom expiration
-securepad send "Secret" --expires 30m
-securepad send "Secret" --expires 1d
+oseal secret send "Secret" --expires 30m
+oseal secret send "Secret" --expires 1d
+oseal secret send "Secret" --expires 7d
 
-# Allow multiple reads
-securepad send "Secret" --no-burn
+# Self-destruct after reading
+oseal secret send "Secret" --self-destruct
 
 # From stdin
-echo "Secret content" | securepad send
+echo "Secret content" | oseal secret send
+
+# Reveal a secret
+oseal secret reveal "https://otterseal.ycmj.bot/send/abc123#key"
+
+# Check if secret exists without reading
+oseal secret peek "https://otterseal.ycmj.bot/send/abc123#key"
 ```
 
-### Receive a secret
+## Configuration
 
-```bash
-# Fetch and decrypt
-securepad receive "https://securepad.jbot.ycmjason.com/send/abc123#key"
+Create `~/.oseal.json`:
 
-# Check if it exists without triggering burn
-securepad receive "https://..." --peek
+```json
+{
+  "server_url": "https://otterseal.ycmj.bot",
+  "editor": "vim"
+}
 ```
-
-### Delete a note
-
-```bash
-securepad delete "my-note-title"
-securepad rm "my-note-title"
-```
-
-## Environment Variables
-
-- `SECUREPAD_URL` - Override the server URL (default: `https://securepad.jbot.ycmjason.com`)
 
 ## How It Works
 
 All encryption happens client-side using AES-256-GCM:
 
-1. **Note title** → SHA-256 hash → note ID (server only sees this)
-2. **Note title** → AES-256 key derivation
+1. **Note title** → HKDF derivation → note ID (server only sees this)
+2. **Note title** → HKDF derivation → AES-256 key
 3. **Content** → encrypted with derived key → stored on server
 
 The server never sees your plaintext content or titles.

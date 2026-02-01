@@ -1,17 +1,18 @@
 {
-  "name": "@securepad/cli",
-  "version": "workspace:*",
-  "description": "Zero-knowledge encrypted notepad CLI",
+  "name": "@otterseal/cli",
+  "version": "1.0.0",
+  "description": "OtterSeal command-line interface",
   "type": "module",
   "bin": {
-    "securepad": "./bin/securepad.js"
+    "oseal": "./bin/oseal.js",
+    "otterseal": "./bin/oseal.js"
   },
   "scripts": {
     "dev": "echo 'CLI ready'",
-    "build": "echo 'No build needed'"
+    "build": "echo 'CLI ready - no build needed'"
   },
   "dependencies": {
-    "@securepad/shared": "workspace:*",
+    "@otterseal/core": "workspace:*",
     "commander": "^13.1.0"
   },
   "engines": {

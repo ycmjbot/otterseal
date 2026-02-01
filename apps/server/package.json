@@ -1,6 +1,6 @@
 {
-  "name": "server",
-  "version": "2026.01.30",
+  "name": "@otterseal/server",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,5 +19,8 @@
     "@types/express": "catalog:",
     "@types/ws": "catalog:",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

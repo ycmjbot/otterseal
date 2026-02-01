@@ -11,7 +11,7 @@ export default function AboutPage() {
       <div className="prose dark:prose-invert py-4 px-0 md:px-0">
         <div className="flex items-center gap-3 mb-6 not-prose">
           <Lock className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white m-0">How SecurePad Works</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white m-0">How OtterSeal Works</h2>
         </div>
         <p className="lead text-base md:text-lg">Zero-knowledge encryption — your secrets stay yours, always.</p>
 
@@ -69,7 +69,7 @@ export default function AboutPage() {
           </p>
           <div className="bg-gray-900 text-gray-100 p-3 rounded-lg mb-3 overflow-hidden">
             <code className="text-xs block break-all">
-              https://securepad.jbot.ycmjason.com/s/abc123#encryption-key-here
+              https://otterseal.ycmj.bot/s/abc123#encryption-key-here
             </code>
           </div>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
@@ -87,7 +87,7 @@ export default function AboutPage() {
         <ul className="text-sm md:text-base">
           <li><strong>Expiring Links:</strong> Set secrets to expire after 1 hour, 1 day, 7 days, or 30 days.</li>
           <li><strong>Burn After Reading:</strong> Optionally delete the secret immediately after it's opened once.</li>
-          <li><strong>No Server Access:</strong> Even SecurePad's server cannot decrypt your secrets — the key never reaches us.</li>
+          <li><strong>No Server Access:</strong> Even OtterSeal's server cannot decrypt your secrets — the key never reaches us.</li>
         </ul>
         
         <div className="not-prose my-6">

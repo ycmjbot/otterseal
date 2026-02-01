@@ -43,7 +43,7 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
                 onClick={onClose}
                 className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
              >
-                <span>🔒 SecurePad</span>
+                <span>🦦 OtterSeal</span>
              </Link>
              <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
                 <X className="w-5 h-5" />

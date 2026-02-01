@@ -1,7 +1,7 @@
 {
-  "name": "client",
+  "name": "@otterseal/client",
   "private": true,
-  "version": "workspace:*",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,7 +16,7 @@
     "@lexical/markdown": "catalog:",
     "@lexical/react": "catalog:",
     "@lexical/rich-text": "catalog:",
-    "@securepad/shared": "workspace:*",
+    "@otterseal/core": "workspace:*",
     "@tailwindcss/typography": "catalog:",
     "clsx": "catalog:",
     "lexical": "catalog:",
@@ -39,5 +39,8 @@
     "tailwindcss": "catalog:",
     "typescript": "^5.9.3",
     "vite": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

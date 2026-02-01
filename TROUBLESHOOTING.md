@@ -1,4 +1,4 @@
-# SecurePad Troubleshooting
+# OtterSeal Troubleshooting
 
 ## Lexical Errors
 
@@ -76,11 +76,11 @@ const myTransformers = [HEADING, QUOTE, UNORDERED_LIST, ORDERED_LIST, CODE];
 Sometimes `otterway-deploy` reports failure even when the build succeeds. Check actual status:
 
 ```bash
-sudo systemctl status securepad
+sudo systemctl status otterseal
 otterway-status
 ```
 
 If the service is running with an old image, restart it:
 ```bash
-sudo systemctl restart securepad
+sudo systemctl restart otterseal
 ```

@@ -1,6 +1,6 @@
 {
-  "name": "securepad-monorepo",
-  "version": "2026.01.30",
+  "name": "otterseal-monorepo",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter \"*\" dev",
@@ -8,7 +8,8 @@
     "start": "pnpm --filter server start"
   },
   "devDependencies": {
-    "concurrently": "catalog:"
+    "concurrently": "catalog:",
+    "pkgroll": "^2.23.0"
   },
   "packageManager": "pnpm@10.28.2"
 }

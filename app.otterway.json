@@ -1,8 +1,8 @@
 {
-  "name": "securepad",
+  "name": "otterseal",
   "type": "container",
-  "description": "SecurePad - Zero-Knowledge Encrypted Notepad",
-  "domain": "securepad.ycmj.bot",
+  "description": "🦦 OtterSeal - Zero-Knowledge Encrypted Secrets",
+  "domain": "otterseal.ycmj.bot",
   "port": 3000,
   "internalPort": 3000,
   "resources": {
