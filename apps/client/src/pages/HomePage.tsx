@@ -26,7 +26,7 @@ export default function HomePage() {
       <div className="w-full space-y-8 text-center py-8">
         <div className="space-y-4">
           <div className="flex justify-center">
-            <img src="/otterseal-logo.png" alt="OtterSeal" className="w-24 h-24" />
+            <img src="/otterseal-logo.png" alt="OtterSeal" className="w-40 h-40" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
             Welcome to OtterSeal
