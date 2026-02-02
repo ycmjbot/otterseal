@@ -26,9 +26,7 @@ export default function HomePage() {
       <div className="w-full space-y-8 text-center py-8">
         <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="p-4 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl">
-              <Lock className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
-            </div>
+            <img src="/otterseal-logo.png" alt="OtterSeal" className="w-24 h-24" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
             Welcome to OtterSeal

@@ -42,9 +42,10 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
           <Link
             to="/"
             onClick={onClose}
-            className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white hover:opacity-75 transition-opacity"
           >
-            <span>🦦 OtterSeal</span>
+            <img src="/otterseal-logo.png" alt="OtterSeal" className="w-10 h-10" />
+            <span>OtterSeal</span>
           </Link>
           <button
             onClick={onClose}
