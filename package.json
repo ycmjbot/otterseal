@@ -17,7 +17,7 @@
     "zero-knowledge",
     "crypto"
   ],
-  "author": "J Bot (JBot)",
+  "author": "JBot",
   "type": "module",
   "publishConfig": {
     "access": "public"

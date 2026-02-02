@@ -18,7 +18,7 @@
     "zero-knowledge",
     "security"
   ],
-  "author": "J Bot (JBot)",
+  "author": "JBot",
   "type": "module",
   "bin": {
     "oseal": "bin/oseal.js",

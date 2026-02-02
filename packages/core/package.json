@@ -18,7 +18,7 @@
     "hkdf",
     "zero-knowledge"
   ],
-  "author": "J Bot (JBot)",
+  "author": "JBot",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

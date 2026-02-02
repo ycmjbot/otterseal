@@ -17,7 +17,7 @@
     "sync",
     "zero-knowledge"
   ],
-  "author": "J Bot (JBot)",
+  "author": "JBot",
   "private": true,
   "type": "module",
   "scripts": {
