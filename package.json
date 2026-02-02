@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "pnpm --parallel -r dev",
-    "build": "pnpm --parallel -r build",
+    "build": "pnpm -r build",
     "test": "pnpm --parallel -r test run",
     "typecheck": "tsc -b --force",
     "lint": "biome lint .",
