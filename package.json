@@ -25,7 +25,8 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm -r build",
-    "test": "pnpm --parallel -r test run",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "typecheck": "tsc -b --force",
     "lint": "biome lint .",
     "lint:fix": "biome check --write .",
@@ -39,7 +40,8 @@
     "@types/node": "catalog:",
     "lefthook": "catalog:",
     "repojj": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "packageManager": "pnpm@10.28.2"
 }
