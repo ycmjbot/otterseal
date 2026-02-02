@@ -44,25 +44,17 @@ const encrypted = await encryptNote('secret content', key)
 ## Architecture
 
 ```
-┌───────────────────────────┐
-│   Client (Browser/CLI)    │
-├───────────────────────────┤
-│ @otterseal/core           │
-│ • Web Crypto API          │
-│ • HKDF key derivation     │
-│ • AES-256-GCM encryption  │
-└────────────┬──────────────┘
-             │ (encrypted)
-             ↓
-      ┌──────────────┐
-      │  REST API /  │
-      │  WebSockets  │
-      └──────┬───────┘
-             │
-      ┌──────────────┐
-      │   Database   │
-      │ (encrypted)  │
-      └──────────────┘
+Client (Browser/CLI)
+       ↓
+@otterseal/core
+  • Web Crypto API
+  • HKDF derivation
+  • AES-256-GCM
+       ↓
+   REST API
+  (encrypted)
+       ↓
+   Database
 ```
 
 ## Security First
