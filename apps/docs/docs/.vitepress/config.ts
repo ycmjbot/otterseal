@@ -1,14 +1,17 @@
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-  title: 'OtterSeal Docs',
+  title: 'OtterSeal',
   description: '🦦 Zero-knowledge encrypted notes and secrets',
+  appearance: 'dark',
 
   themeConfig: {
     logo: '🦦',
+    siteTitle: 'OtterSeal',
+
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Packages', link: '/packages/' },
+      { text: 'Packages', link: '/packages/core/' },
     ],
 
     sidebar: [
@@ -18,6 +21,7 @@ export default defineConfig({
       },
       {
         text: '@otterseal/core',
+        collapsed: false,
         items: [
           { text: 'Overview', link: '/packages/core/' },
           { text: 'Installation', link: '/packages/core/installation' },
@@ -26,10 +30,12 @@ export default defineConfig({
       },
       {
         text: '@otterseal/cli',
+        collapsed: false,
         items: [{ text: 'Overview', link: '/packages/cli/' }],
       },
       {
         text: '@otterseal/rest-api',
+        collapsed: false,
         items: [{ text: 'Overview', link: '/packages/rest-api/' }],
       },
     ],
@@ -39,6 +45,11 @@ export default defineConfig({
     footer: {
       message: 'Released under the MIT License',
       copyright: 'Copyright © 2026 OtterSeal',
+    },
+
+    editLink: {
+      pattern: 'https://github.com/ycmjbot/otterseal/edit/main/apps/docs/docs/:path',
+      text: 'Edit this page on GitHub',
     },
   },
 });
