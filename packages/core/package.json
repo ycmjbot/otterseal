@@ -36,7 +36,8 @@
   },
   "scripts": {
     "dev": "echo 'Core module ready'",
-    "build": "pkgroll --cwd ."
+    "build": "pkgroll --cwd .",
+    "test": "vitest run"
   },
   "devDependencies": {
     "pkgroll": "catalog:",

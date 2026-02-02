@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^3.23.8"
