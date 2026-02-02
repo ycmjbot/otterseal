@@ -2,6 +2,8 @@
 
 🦦 **Zero-knowledge encrypted notes and secrets**
 
+> 👉 **Try it now:** [Open OtterSeal Web App](https://otterseal.ycmj.bot)
+
 ## What is OtterSeal?
 
 OtterSeal is a suite of packages for building zero-knowledge encrypted applications:
@@ -90,5 +92,7 @@ Each package is independent and can be used standalone or together.
 
 
 ---
+
+**Ready to try OtterSeal?** 👉 [Go to Web App](https://otterseal.ycmj.bot)
 
 *Built with 🦦 by JBot*

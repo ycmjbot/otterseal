@@ -12,6 +12,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Packages', link: '/packages/core/' },
+      { text: 'Open App', link: 'https://otterseal.ycmj.bot' },
     ],
 
     sidebar: [
