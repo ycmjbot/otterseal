@@ -25,7 +25,7 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r --filter='!@otterseal/client' --filter='!@otterseal/server' test",
+    "test": "pnpm -r test",
     "test:watch": "vitest watch",
     "typecheck": "tsc -b --force",
     "lint": "biome lint .",

@@ -22,8 +22,7 @@
   "type": "module",
   "scripts": {
     "start": "node --loader tsx/esm server.ts",
-    "dev": "tsx --watch server.ts",
-    "test": "vitest run"
+    "dev": "tsx --watch server.ts"
   },
   "dependencies": {
     "@otterseal/rest-api": "workspace:*",
