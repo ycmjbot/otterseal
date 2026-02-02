@@ -152,8 +152,8 @@ export default function SendViewPage() {
 
         {status === 'ready' && (
           <div className="text-center">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-              <Mail className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+              <Mail className="w-12 h-12 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               You have a secret message
@@ -176,7 +176,7 @@ export default function SendViewPage() {
 
             <button
               onClick={handleOpen}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-colors"
             >
               <MailOpen className="w-5 h-5" />
               Open Message
@@ -186,7 +186,7 @@ export default function SendViewPage() {
 
         {status === 'opened' && (
           <div className="space-y-4 w-full">
-            <div className="flex items-center justify-center gap-2 text-indigo-600 dark:text-indigo-400 mb-4">
+            <div className="flex items-center justify-center gap-2 text-primary mb-4">
               <MailOpen className="w-8 h-8" />
             </div>
 
@@ -209,7 +209,7 @@ export default function SendViewPage() {
             <div className="text-center pt-4">
               <Link
                 to="/send"
-                className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="inline-flex items-center gap-2 text-primary hover:underline"
               >
                 <Send className="w-4 h-4" />
                 Create your own secret

@@ -1,24 +1,93 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Tailwind 4 CSS-based theme config */
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
-/* Dark mode variant using class strategy */
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
-    --background: var(--color-background);
-    --foreground: var(--color-foreground);
+    /* Base - Slate 50/900 */
+    --background: #ffffff;
+    --foreground: #0f172a;
+
+    /* Primary - Teal (Brand) */
+    --primary: #0d9488; /* teal-600 */
+    --primary-foreground: #ffffff;
+
+    /* Secondary - Navy (Brand) */
+    --secondary: #334155; /* slate-700 */
+    --secondary-foreground: #ffffff;
+
+    /* Muted - For backgrounds/subtext */
+    --muted: #f1f5f9; /* slate-100 */
+    --muted-foreground: #64748b; /* slate-500 */
+
+    /* Accent - For hovers */
+    --accent: #f0fdfa; /* teal-50 */
+    --accent-foreground: #0f172a;
+
+    /* Destructive */
+    --destructive: #ef4444; /* red-500 */
+    --destructive-foreground: #ffffff;
+
+    /* UI Elements */
+    --border: #e2e8f0; /* slate-200 */
+    --input: #e2e8f0;
+    --ring: #0d9488; /* match primary */
   }
 
   .dark {
-    --background: #0f172a;
+    /* Base - Slate 950 */
+    --background: #020617; 
     --foreground: #f8fafc;
+
+    /* Primary - Teal (Lighter for contrast) */
+    --primary: #14b8a6; /* teal-500 */
+    --primary-foreground: #020617; /* dark text on bright teal */
+
+    /* Secondary - Navy */
+    --secondary: #1e293b; /* slate-800 */
+    --secondary-foreground: #f8fafc;
+
+    /* Muted */
+    --muted: #1e293b; /* slate-800 */
+    --muted-foreground: #94a3b8; /* slate-400 */
+
+    /* Accent */
+    --accent: #115e59; /* teal-900 */
+    --accent-foreground: #f8fafc;
+
+    /* Destructive */
+    --destructive: #7f1d1d; /* red-900 */
+    --destructive-foreground: #f8fafc;
+
+    /* UI Elements */
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #14b8a6;
   }
 }
 

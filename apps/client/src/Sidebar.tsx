@@ -125,7 +125,7 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
                       className={clsx(
                         'group flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors truncate',
                         safeCurrentTitle === s.title
-                          ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium'
+                          ? 'bg-primary/10 text-primary font-medium'
                           : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
                       )}
                     >

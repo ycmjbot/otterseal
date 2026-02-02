@@ -9,7 +9,7 @@ export default function AboutPage() {
     <Layout maxWidth="max-w-2xl">
       <div className="prose dark:prose-invert py-4 px-0 md:px-0">
         <div className="flex items-center gap-3 mb-6 not-prose">
-          <Lock className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
+          <Lock className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 text-primary" />
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white m-0">
             How OtterSeal Works
           </h2>
@@ -26,12 +26,12 @@ export default function AboutPage() {
 
         <div className="not-prose bg-gray-100 dark:bg-gray-800 rounded-xl p-4 md:p-5 my-5 -mx-2 md:mx-0">
           <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 text-sm md:text-base">
-            <Key className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+            <Key className="w-4 h-4 text-primary flex-shrink-0" />
             How Your Title Becomes Your Key
           </h4>
           <ol className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
             <li className="flex gap-3 items-start">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center mt-0.5">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center mt-0.5">
                 1
               </span>
               <span className="min-w-0 break-words">
@@ -39,7 +39,7 @@ export default function AboutPage() {
               </span>
             </li>
             <li className="flex gap-3 items-start">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center mt-0.5">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center mt-0.5">
                 2
               </span>
               <span className="min-w-0 break-words">
@@ -48,7 +48,7 @@ export default function AboutPage() {
               </span>
             </li>
             <li className="flex gap-3 items-start">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center mt-0.5">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center mt-0.5">
                 3
               </span>
               <div className="min-w-0 break-words">
@@ -58,7 +58,7 @@ export default function AboutPage() {
               </div>
             </li>
             <li className="flex gap-3 items-start">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center mt-0.5">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center mt-0.5">
                 4
               </span>
               <span className="min-w-0 break-words">
@@ -88,7 +88,7 @@ export default function AboutPage() {
 
         <div className="not-prose bg-gray-100 dark:bg-gray-800 rounded-xl p-4 md:p-5 my-5 -mx-2 md:mx-0">
           <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 text-sm md:text-base">
-            <EyeOff className="w-4 h-4 text-purple-500 flex-shrink-0" />
+            <EyeOff className="w-4 h-4 text-primary flex-shrink-0" />
             The URL Contains the Key
           </h4>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
@@ -135,7 +135,7 @@ export default function AboutPage() {
         <div className="not-prose my-6">
           <button
             onClick={() => navigate('/send')}
-            className="inline-flex items-center gap-2 px-4 md:px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all text-sm md:text-base w-full md:w-auto justify-center"
+            className="inline-flex items-center gap-2 px-4 md:px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-all text-sm md:text-base w-full md:w-auto justify-center"
           >
             <Send className="w-4 h-4 md:w-5 md:h-5" />
             Try Send a Secret

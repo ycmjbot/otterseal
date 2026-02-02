@@ -132,7 +132,7 @@ export default function Header({
                   (e.target as HTMLInputElement).blur();
                 }
               }}
-              className="text-lg font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none max-w-[300px] truncate transition-colors placeholder-gray-400"
+              className="text-lg font-bold text-gray-900 dark:text-white bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-ring outline-none max-w-[300px] truncate transition-colors placeholder-gray-400"
             />
             {showStar && (
               <button

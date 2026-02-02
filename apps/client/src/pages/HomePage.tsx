@@ -47,13 +47,13 @@ export default function HomePage() {
             value={inputTitle}
             onChange={e => setInputTitle(e.target.value)}
             placeholder="Enter a note title..."
-            className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
+            className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-ring transition-colors"
           />
           <div className="flex gap-3">
             <button
               type="submit"
               disabled={!inputTitle.trim()}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-primary hover:bg-primary/90 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-primary-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
             >
               Open Note
               <ArrowRight className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function HomePage() {
         <div className="pt-2">
           <button
             onClick={() => navigate('/send')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-teal-500 hover:from-primary/90 hover:to-teal-500/90 text-primary-foreground font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
           >
             <Send className="w-5 h-5" />
             Send a One-Time Secret
@@ -98,7 +98,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
-            <Lock className="w-6 h-6 text-indigo-500 mb-2" />
+            <Lock className="w-6 h-6 text-primary mb-2" />
             <h3 className="font-semibold text-gray-900 dark:text-white">Zero Knowledge</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Title = password. We can't recover it.

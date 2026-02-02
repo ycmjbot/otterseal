@@ -68,7 +68,7 @@ export default function SendComposePage() {
             onChange={e => setMessage(e.target.value)}
             placeholder="Type your secret message here..."
             rows={8}
-            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors resize-none"
+            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-ring transition-colors resize-none"
           />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
             {message.length.toLocaleString()} characters
@@ -84,7 +84,7 @@ export default function SendComposePage() {
             <select
               value={expiryValue ?? ''}
               onChange={e => setExpiryValue(e.target.value ? Number(e.target.value) : null)}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-ring transition-colors"
             >
               {EXPIRY_OPTIONS.map(opt => (
                 <option key={opt.label} value={opt.value ?? ''}>
@@ -122,7 +122,7 @@ export default function SendComposePage() {
         <button
           onClick={handleCreate}
           disabled={!message.trim() || isCreating}
-          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-primary hover:bg-primary/90 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-primary-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"
         >
           {isCreating ? (
             <>
