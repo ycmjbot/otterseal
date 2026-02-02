@@ -48,6 +48,7 @@ const encrypted = await encryptNote('secret content', key)
 │             Client (Browser/CLI)            │
 ├─────────────────────────────────────────────┤
 │ @otterseal/core                             │
+│ • Web Crypto API (SubtleCrypto)             │
 │ • HKDF key derivation                       │
 │ • AES-256-GCM encryption                    │
 │ • Zero-knowledge design                     │
@@ -68,6 +69,7 @@ const encrypted = await encryptNote('secret content', key)
 
 ## Security First
 
+- ✅ **Web Crypto API** — Uses native browser cryptography (SubtleCrypto)
 - ✅ **Client-side encryption** — Keys never leave your device
 - ✅ **AES-256-GCM** — Industry-standard authenticated encryption
 - ✅ **HKDF** — Cryptographic key derivation with domain separation
