@@ -2,7 +2,26 @@
   "name": "otterseal-monorepo",
   "version": "1.0.0",
   "private": true,
+  "description": "🦦 OtterSeal - Zero-knowledge encrypted notes and secrets",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git"
+  },
+  "homepage": "https://github.com/ycmjbot/otterseal#readme",
+  "bugs": "https://github.com/ycmjbot/otterseal/issues",
+  "keywords": [
+    "otterseal",
+    "encryption",
+    "secrets",
+    "zero-knowledge",
+    "crypto"
+  ],
+  "author": "Jason (ycmjbot)",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",

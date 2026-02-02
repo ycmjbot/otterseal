@@ -1,11 +1,36 @@
 {
   "name": "@otterseal/cli",
   "version": "1.0.0",
-  "description": "OtterSeal command-line interface",
+  "description": "🦦 OtterSeal CLI - Zero-knowledge encrypted secrets and notes from the command line",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/ycmjbot/otterseal#readme",
+  "bugs": "https://github.com/ycmjbot/otterseal/issues",
+  "keywords": [
+    "otterseal",
+    "cli",
+    "encryption",
+    "secrets",
+    "zero-knowledge",
+    "security"
+  ],
+  "author": "Jason (ycmjbot)",
   "type": "module",
   "bin": {
-    "oseal": "./bin/oseal.js",
-    "otterseal": "./bin/oseal.js"
+    "oseal": "bin/oseal.js",
+    "otterseal": "bin/oseal.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "echo 'CLI ready'",

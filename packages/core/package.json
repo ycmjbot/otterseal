@@ -1,15 +1,38 @@
 {
   "name": "@otterseal/core",
   "version": "1.0.0",
-  "description": "OtterSeal shared cryptography utilities",
+  "description": "🦦 OtterSeal shared cryptography utilities - AES-256-GCM encryption with HKDF key derivation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/ycmjbot/otterseal#readme",
+  "bugs": "https://github.com/ycmjbot/otterseal/issues",
+  "keywords": [
+    "otterseal",
+    "encryption",
+    "crypto",
+    "aes-256-gcm",
+    "hkdf",
+    "zero-knowledge"
+  ],
+  "author": "Jason (ycmjbot)",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "echo 'Core module ready'",

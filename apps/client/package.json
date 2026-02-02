@@ -1,5 +1,22 @@
 {
   "name": "@otterseal/client",
+  "description": "🦦 OtterSeal web client - Zero-knowledge encrypted notepad UI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git",
+    "directory": "apps/client"
+  },
+  "homepage": "https://github.com/ycmjbot/otterseal#readme",
+  "bugs": "https://github.com/ycmjbot/otterseal/issues",
+  "keywords": [
+    "otterseal",
+    "client",
+    "react",
+    "encryption",
+    "notepad"
+  ],
+  "author": "Jason (ycmjbot)",
   "private": true,
   "version": "1.0.0",
   "type": "module",

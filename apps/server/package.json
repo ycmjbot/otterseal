@@ -1,6 +1,23 @@
 {
   "name": "@otterseal/server",
   "version": "1.0.0",
+  "description": "🦦 OtterSeal server - WebSocket sync backend for zero-knowledge notes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git",
+    "directory": "apps/server"
+  },
+  "homepage": "https://github.com/ycmjbot/otterseal#readme",
+  "bugs": "https://github.com/ycmjbot/otterseal/issues",
+  "keywords": [
+    "otterseal",
+    "server",
+    "websocket",
+    "sync",
+    "zero-knowledge"
+  ],
+  "author": "Jason (ycmjbot)",
   "private": true,
   "type": "module",
   "scripts": {
