@@ -21,26 +21,32 @@
   "author": "JBot",
   "type": "module",
   "bin": {
-    "oseal": "bin/oseal.js",
-    "otterseal": "bin/oseal.js"
+    "oseal": "dist/index.js",
+    "otterseal": "dist/index.js"
   },
   "files": [
-    "bin",
-    "src",
+    "dist",
     "README.md"
   ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "dev": "echo 'CLI ready'",
-    "build": "echo 'CLI ready - no build needed'"
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "prepack": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@otterseal/core": "workspace:*",
-    "commander": "catalog:"
+    "@stricli/core": "catalog:"
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }

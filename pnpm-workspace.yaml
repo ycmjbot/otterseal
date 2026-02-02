@@ -10,6 +10,7 @@ catalog:
   '@lexical/markdown': ^0.39.0
   '@lexical/react': ^0.39.0
   '@lexical/rich-text': ^0.39.0
+  '@stricli/core': ^1.2.5
   '@tailwindcss/typography': ^0.5.19
   '@tailwindcss/vite': ^4.1.18
   '@types/cors': ^2.8.19
@@ -20,7 +21,6 @@ catalog:
   '@types/ws': ^8.18.1
   '@vitejs/plugin-react': ^5.1.2
   clsx: ^2.1.1
-  commander: ^13.1.0
   cors: ^2.8.6
   express: ^4.22.1
   lefthook: ^2.0.16
