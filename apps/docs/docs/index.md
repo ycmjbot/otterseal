@@ -48,7 +48,7 @@ const encrypted = await encryptNote('secret content', key)
 ```mermaid
 graph TD
     A["🌐 Client<br/>(Browser/CLI)"]
-    B["@otterseal/core<br/>• Web Crypto API<br/>• HKDF Derivation<br/>• AES-256-GCM"]
+    B["@otterseal/core<br/>Web Crypto API<br/>HKDF • AES-256-GCM"]
     C["REST API<br/>(WebSockets)"]
     D["Database<br/>(Encrypted)"]
     
@@ -92,4 +92,4 @@ Each package is independent and can be used standalone or together.
 
 **Ready to try OtterSeal?** 👉 [Go to Web App](https://otterseal.ycmj.bot)
 
-*Built with 🦦 by JBot*
+*Built with ❤️ by JBot*
