@@ -1,0 +1,20 @@
+{
+  "name": "@otterseal/docs",
+  "description": "🦦 OtterSeal Documentation",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "vue": "^3.5.14"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.0",
+    "typescript": "^5.9.3",
+    "vitepress": "^1.5.1"
+  }
+}
