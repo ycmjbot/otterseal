@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
-    "@rslint/tsgo": "^0.2.0",
+    "@rslint/tsgo": "catalog:",
     "@types/node": "catalog:",
     "lefthook": "catalog:",
     "repojj": "catalog:",
