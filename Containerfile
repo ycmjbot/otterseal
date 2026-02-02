@@ -12,7 +12,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 # Copy all package.json files for better caching
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
-COPY packages/shared/package.json ./packages/shared/
+COPY packages/core/package.json ./packages/core/
 
 # Install dependencies
 RUN CI=true pnpm install --frozen-lockfile
