@@ -226,6 +226,9 @@ importers:
 
   apps/server:
     dependencies:
+      '@otterseal/rest-api':
+        specifier: workspace:*
+        version: link:../../packages/rest-api
       cors:
         specifier: 'catalog:'
         version: 2.8.6
@@ -263,6 +266,8 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+
+  packages/rest-api: {}
 
 packages:
 

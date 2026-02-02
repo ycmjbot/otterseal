@@ -26,6 +26,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@otterseal/rest-api": "workspace:*",
     "cors": "catalog:",
     "express": "catalog:",
     "tsx": "catalog:",
