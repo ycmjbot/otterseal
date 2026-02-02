@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
+import { execSync } from 'node:child_process';
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { decryptNote, deriveKey, encryptNote, hashTitle } from '@otterseal/core';
 import { Command } from 'commander';
-import { hashTitle, deriveKey, encryptNote, decryptNote } from '@otterseal/core';
-import crypto from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
-import { execSync } from 'child_process';
-import os from 'os';
 
 // Constants
 const DEFAULT_SERVER_URL = 'https://otterseal.ycmj.bot';
@@ -39,9 +39,9 @@ async function openEditor(defaultContent = '') {
   const config = await loadConfig();
   const editor = config.editor || process.env.EDITOR || 'nano';
   const tempFile = path.join(os.tmpdir(), `oseal-${Date.now()}.txt`);
-  
+
   await fs.writeFile(tempFile, defaultContent);
-  
+
   try {
     execSync(`${editor} "${tempFile}"`, { stdio: 'inherit' });
     const content = await fs.readFile(tempFile, 'utf-8');
@@ -57,7 +57,7 @@ function parseDuration(str) {
   if (!match) throw new Error(`Invalid duration: ${str}. Use format like "1h", "30m", "1d"`);
   const [, num, unit] = match;
   const multipliers = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
-  return parseInt(num) * multipliers[unit];
+  return parseInt(num, 10) * multipliers[unit];
 }
 
 // Helper: get server URL
@@ -73,21 +73,19 @@ const program = new Command()
   .version('1.0.0');
 
 // NOTE COMMAND
-const noteCommand = new Command()
-  .name('note')
-  .description('Manage encrypted notes');
+const noteCommand = new Command().name('note').description('Manage encrypted notes');
 
 noteCommand
   .command('read <title>')
   .description('Read and decrypt a note')
-  .action(async (title) => {
+  .action(async title => {
     try {
       const serverUrl = await getServerUrl();
       const id = await hashTitle(title);
       const key = await deriveKey(title);
-      
+
       const res = await fetch(`${serverUrl}/api/notes/${id}`);
-      
+
       if (res.status === 404) {
         console.error('❌ Note not found');
         process.exit(1);
@@ -100,7 +98,7 @@ noteCommand
         console.error(`❌ Error: ${res.status}`);
         process.exit(1);
       }
-      
+
       const { content } = await res.json();
       const plaintext = await decryptNote(content, key);
       process.stdout.write(plaintext);
@@ -117,37 +115,37 @@ noteCommand
   .action(async (title, content, options) => {
     try {
       let finalContent = content;
-      
+
       if (!finalContent || options.editor) {
         finalContent = await openEditor(content || '');
       }
-      
+
       if (!finalContent) {
         finalContent = await readStdin();
       }
-      
+
       if (!finalContent) {
         console.error('❌ No content provided');
         process.exit(1);
       }
-      
+
       const serverUrl = await getServerUrl();
       const id = await hashTitle(title);
       const key = await deriveKey(title);
       const encrypted = await encryptNote(finalContent, key);
-      
+
       const res = await fetch(`${serverUrl}/api/notes/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: encrypted })
+        body: JSON.stringify({ content: encrypted }),
       });
-      
+
       if (!res.ok) {
         const err = await res.json();
         console.error('❌ Error:', err.error || res.status);
         process.exit(1);
       }
-      
+
       console.error('✅ Note saved');
       console.error(`📝 Title: ${title}`);
     } catch (err) {
@@ -159,9 +157,7 @@ noteCommand
 program.addCommand(noteCommand);
 
 // SECRET COMMAND
-const secretCommand = new Command()
-  .name('secret')
-  .description('Manage one-time secrets');
+const secretCommand = new Command().name('secret').description('Manage one-time secrets');
 
 secretCommand
   .command('send [content]')
@@ -172,44 +168,44 @@ secretCommand
   .action(async (content, options) => {
     try {
       let finalContent = content;
-      
+
       if (!finalContent || options.editor) {
         finalContent = await openEditor(content || '');
       }
-      
+
       if (!finalContent) {
         finalContent = await readStdin();
       }
-      
+
       if (!finalContent) {
         console.error('❌ No content provided');
         process.exit(1);
       }
-      
+
       const serverUrl = await getServerUrl();
       const secretKey = crypto.randomBytes(16).toString('base64url');
       const id = await hashTitle(secretKey);
       const key = await deriveKey(secretKey);
       const encrypted = await encryptNote(finalContent, key);
-      
+
       const body = {
         content: encrypted,
         expiresAt: Date.now() + parseDuration(options.expires),
-        burnAfterReading: options.selfDestruct || false
+        burnAfterReading: options.selfDestruct || false,
       };
-      
+
       const res = await fetch(`${serverUrl}/api/notes/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
-      
+
       if (!res.ok) {
         const err = await res.json();
         console.error('❌ Error:', err.error || res.status);
         process.exit(1);
       }
-      
+
       const link = `${serverUrl}/send/${id}#${secretKey}`;
       console.log(link);
       console.error('');
@@ -232,21 +228,21 @@ secretCommand
       const pathParts = parsed.pathname.split('/');
       const id = pathParts[pathParts.length - 1];
       const secretKey = parsed.hash.slice(1);
-      
+
       if (!id || !secretKey) {
         console.error('❌ Invalid secret link format');
         process.exit(1);
       }
-      
+
       const serverUrl = await getServerUrl();
       const key = await deriveKey(secretKey);
-      
-      const fetchUrl = options.peek 
+
+      const fetchUrl = options.peek
         ? `${serverUrl}/api/notes/${id}?peek=1`
         : `${serverUrl}/api/notes/${id}`;
-      
+
       const res = await fetch(fetchUrl);
-      
+
       if (res.status === 404) {
         console.error('❌ Secret not found (may have been burned)');
         process.exit(1);
@@ -259,19 +255,21 @@ secretCommand
         console.error(`❌ Error: ${res.status}`);
         process.exit(1);
       }
-      
+
       const data = await res.json();
-      
+
       if (options.peek) {
         console.error('✅ Secret exists');
-        console.error(`⏰ Expires: ${data.expiresAt ? new Date(data.expiresAt).toISOString() : 'never'}`);
+        console.error(
+          `⏰ Expires: ${data.expiresAt ? new Date(data.expiresAt).toISOString() : 'never'}`,
+        );
         console.error(`🔥 Self-destruct: ${data.burnAfterReading ? 'yes' : 'no'}`);
         return;
       }
-      
+
       const plaintext = await decryptNote(data.content, key);
       process.stdout.write(plaintext);
-      
+
       if (data.burnAfterReading) {
         console.error('\n🔥 (Secret has been burned)');
       }
@@ -284,24 +282,24 @@ secretCommand
 secretCommand
   .command('peek <url>')
   .description('Check if secret exists without reading')
-  .action(async (url) => {
+  .action(async url => {
     // Delegate to reveal with --peek
     const parsed = new URL(url);
     const pathParts = parsed.pathname.split('/');
     const id = pathParts[pathParts.length - 1];
     const secretKey = parsed.hash.slice(1);
-    
+
     if (!id || !secretKey) {
       console.error('❌ Invalid secret link format');
       process.exit(1);
     }
-    
+
     const serverUrl = await getServerUrl();
-    const key = await deriveKey(secretKey);
-    
+    const _key = await deriveKey(secretKey);
+
     try {
       const res = await fetch(`${serverUrl}/api/notes/${id}?peek=1`);
-      
+
       if (res.status === 404) {
         console.error('❌ Secret not found (may have been burned)');
         process.exit(1);
@@ -314,10 +312,12 @@ secretCommand
         console.error(`❌ Error: ${res.status}`);
         process.exit(1);
       }
-      
+
       const data = await res.json();
       console.error('✅ Secret exists');
-      console.error(`⏰ Expires: ${data.expiresAt ? new Date(data.expiresAt).toISOString() : 'never'}`);
+      console.error(
+        `⏰ Expires: ${data.expiresAt ? new Date(data.expiresAt).toISOString() : 'never'}`,
+      );
       console.error(`🔥 Self-destruct: ${data.burnAfterReading ? 'yes' : 'no'}`);
     } catch (err) {
       console.error('❌ Error:', err.message);

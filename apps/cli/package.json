@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@otterseal/core": "workspace:*",
-    "commander": "^13.1.0"
+    "commander": "catalog:"
   },
   "engines": {
     "node": ">=22.0.0"

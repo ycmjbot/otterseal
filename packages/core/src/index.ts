@@ -1,6 +1,6 @@
-const HKDF_SALT = "SecurePad";
-const HKDF_INFO_ID = "ID";
-const HKDF_INFO_KEY = "KEY";
+const HKDF_SALT = 'SecurePad';
+const HKDF_INFO_ID = 'ID';
+const HKDF_INFO_KEY = 'KEY';
 
 /**
  * Imports the seed as a CryptoKey suitable for HKDF derivation.
@@ -8,21 +8,18 @@ const HKDF_INFO_KEY = "KEY";
 async function getHKDFMasterKey(seed: string): Promise<CryptoKey> {
   const enc = new TextEncoder();
   const masterSecret = enc.encode(seed);
-  return await crypto.subtle.importKey(
-    'raw',
-    masterSecret,
-    'HKDF',
-    false,
-    ['deriveKey', 'deriveBits']
-  );
+  return await crypto.subtle.importKey('raw', masterSecret, 'HKDF', false, [
+    'deriveKey',
+    'deriveBits',
+  ]);
 }
 
 /**
  * Derives a deterministic ID for a given title.
- * 
- * We use HKDF for "Domain Separation". This ensures that the ID sent to the server 
- * is cryptographically decoupled from the encryption key. Even if the server 
- * knows the ID, it cannot derive the Key because they are derived using different 
+ *
+ * We use HKDF for "Domain Separation". This ensures that the ID sent to the server
+ * is cryptographically decoupled from the encryption key. Even if the server
+ * knows the ID, it cannot derive the Key because they are derived using different
  * 'info' strings ("ID" vs "KEY").
  */
 export async function hashTitle(title: string): Promise<string> {
@@ -39,7 +36,7 @@ export async function hashTitle(title: string): Promise<string> {
       info: info,
     },
     masterKey,
-    256
+    256,
   );
 
   const hashArray = Array.from(new Uint8Array(derivedBits));
@@ -48,8 +45,8 @@ export async function hashTitle(title: string): Promise<string> {
 
 /**
  * Derives a 256-bit AES-GCM encryption key from the title.
- * 
- * Uses HKDF with domain separation (info="KEY") to ensure this key remains 
+ *
+ * Uses HKDF with domain separation (info="KEY") to ensure this key remains
  * private even if the derived ID is known to the server.
  */
 export async function deriveKey(title: string): Promise<CryptoKey> {
@@ -68,7 +65,7 @@ export async function deriveKey(title: string): Promise<CryptoKey> {
     masterKey,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt', 'decrypt']
+    ['encrypt', 'decrypt'],
   );
 }
 
@@ -79,17 +76,13 @@ export async function deriveKey(title: string): Promise<CryptoKey> {
 export async function encryptNote(content: string, key: CryptoKey): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(content);
-  
-  const ciphertext = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    encoded
-  );
+
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
 
   // Convert to base64
   const ivB64 = btoa(String.fromCharCode(...iv));
   const cipherB64 = btoa(String.fromCharCode(...new Uint8Array(ciphertext)));
-  
+
   return JSON.stringify({ iv: ivB64, data: cipherB64 });
 }
 
@@ -100,22 +93,18 @@ export async function encryptNote(content: string, key: CryptoKey): Promise<stri
  */
 export async function decryptNote(encryptedJson: string, key: CryptoKey): Promise<string> {
   try {
-    if (!encryptedJson) return "";
+    if (!encryptedJson) return '';
     const parsed = JSON.parse(encryptedJson);
-    if (!parsed.iv || !parsed.data) return "";
+    if (!parsed.iv || !parsed.data) return '';
 
     const ivArr = Uint8Array.from(atob(parsed.iv), c => c.charCodeAt(0));
     const dataArr = Uint8Array.from(atob(parsed.data), c => c.charCodeAt(0));
-    
-    const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: ivArr },
-      key,
-      dataArr
-    );
-    
+
+    const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ivArr }, key, dataArr);
+
     return new TextDecoder().decode(decrypted);
   } catch (e) {
-    console.error("Decryption failed", e);
-    return ""; 
+    console.error('Decryption failed', e);
+    return '';
   }
 }

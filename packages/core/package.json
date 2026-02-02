@@ -16,7 +16,8 @@
     "build": "pkgroll --cwd ."
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "pkgroll": "catalog:",
+    "typescript": "catalog:"
   },
   "engines": {
     "node": ">=20.0.0"

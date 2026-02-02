@@ -1,11 +1,11 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { WebSocketServer, WebSocket } from 'ws';
-import { createServer } from 'http';
+import fs from 'node:fs';
+import { createServer } from 'node:http';
+import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { fileURLToPath } from 'node:url';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
+import express, { type NextFunction, type Request, type Response } from 'express';
+import { WebSocket, WebSocketServer } from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,9 @@ const logFile = process.env.NODE_ENV === 'production' ? '/app/data/debug.log' : 
 function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}\n`;
   console.log(msg);
-  try { fs.appendFileSync(logFile, line); } catch (e) {}
+  try {
+    fs.appendFileSync(logFile, line);
+  } catch (_e) {}
 }
 
 log(`Starting server... Node version: ${process.version}`);
@@ -39,11 +41,10 @@ const MAX_ID_LENGTH = 64; // SHA-256 hex length
 const MAX_CONTENT_LENGTH = 100 * 1024; // 100KB
 
 // Database Setup
-const dbPath = process.env.NODE_ENV === 'production' 
-  ? '/app/data/database.sqlite' 
-  : 'database.sqlite';
+const dbPath =
+  process.env.NODE_ENV === 'production' ? '/app/data/database.sqlite' : 'database.sqlite';
 
-let db: any;
+let db: DatabaseSync;
 try {
   // Ensure directory exists if needed or just rely on volume mapping
   db = new DatabaseSync(dbPath);
@@ -53,40 +54,47 @@ try {
       content TEXT
     )
   `);
-  
+
   // Migration: Add expires_at and burn_after_reading columns if they don't exist
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN expires_at INTEGER`);
     log('Added expires_at column');
-  } catch (e) {}
+  } catch (_e) {}
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN burn_after_reading INTEGER DEFAULT 0`);
     log('Added burn_after_reading column');
-  } catch (e) {}
+  } catch (_e) {}
   // Migration: Add created_at and updated_at columns if they don't exist
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN created_at INTEGER`);
     log('Added created_at column');
-  } catch (e) {}
+  } catch (_e) {}
   try {
     db.exec(`ALTER TABLE notes ADD COLUMN updated_at INTEGER`);
     log('Added updated_at column');
-  } catch (e) {}
-  
+  } catch (_e) {}
+
   log('Database initialized successfully');
-} catch (e: any) {
-  log(`Database initialization failed: ${e.message}\n${e.stack}`);
+} catch (e) {
+  const err = e instanceof Error ? e : new Error(String(e));
+  log(`Database initialization failed: ${err.message}\n${err.stack}`);
   process.exit(1);
 }
 
-const getNote = db.prepare('SELECT content, expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?');
-const getNoteMetadata = db.prepare('SELECT expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?');
+const getNote = db.prepare(
+  'SELECT content, expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?',
+);
+const getNoteMetadata = db.prepare(
+  'SELECT expires_at, burn_after_reading, created_at, updated_at FROM notes WHERE id = ?',
+);
 const upsertNote = db.prepare(`
   INSERT INTO notes (id, content, expires_at, burn_after_reading, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)
   ON CONFLICT(id) DO UPDATE SET content = excluded.content, expires_at = excluded.expires_at, burn_after_reading = excluded.burn_after_reading, updated_at = excluded.updated_at
 `);
 const deleteNote = db.prepare('DELETE FROM notes WHERE id = ?');
-const deleteExpiredNotes = db.prepare('DELETE FROM notes WHERE expires_at IS NOT NULL AND expires_at < ?');
+const deleteExpiredNotes = db.prepare(
+  'DELETE FROM notes WHERE expires_at IS NOT NULL AND expires_at < ?',
+);
 
 // Types
 interface Note {
@@ -107,12 +115,13 @@ interface NoteMetadata {
 // Cleanup expired notes every minute
 setInterval(() => {
   try {
-    const result = deleteExpiredNotes.run(Date.now());
-    if ((result as any).changes > 0) {
-      log(`Cleaned up ${(result as any).changes} expired notes`);
+    const result = deleteExpiredNotes.run(Date.now()) as { changes: number };
+    if (result.changes > 0) {
+      log(`Cleaned up ${result.changes} expired notes`);
     }
-  } catch (e: any) {
-    log(`Cleanup error: ${e.message}`);
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    log(`Cleanup error: ${err.message}`);
   }
 }, 60 * 1000);
 
@@ -123,13 +132,13 @@ function isExpired(note: NoteMetadata) {
 
 // REST API for Send feature
 app.get('/api/notes/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const peek = req.query.peek === '1';
-  
+
   if (!id || id.length > MAX_ID_LENGTH) {
     return res.status(400).json({ error: 'Invalid ID' });
   }
-  
+
   try {
     if (peek) {
       const note = getNoteMetadata.get(id) as NoteMetadata | undefined;
@@ -143,7 +152,7 @@ app.get('/api/notes/:id', (req: Request, res: Response) => {
       return res.json({
         exists: true,
         expiresAt: note.expires_at,
-        burnAfterReading: note.burn_after_reading === 1
+        burnAfterReading: note.burn_after_reading === 1,
       });
     } else {
       const note = getNote.get(id) as Note | undefined;
@@ -154,30 +163,31 @@ app.get('/api/notes/:id', (req: Request, res: Response) => {
         deleteNote.run(id);
         return res.status(410).json({ error: 'Expired' });
       }
-      
+
       const response = {
         content: note.content,
         expiresAt: note.expires_at,
-        burnAfterReading: note.burn_after_reading === 1
+        burnAfterReading: note.burn_after_reading === 1,
       };
-      
+
       if (note.burn_after_reading === 1) {
         deleteNote.run(id);
         log(`Burned note ${id.slice(0, 8)}...`);
       }
-      
+
       return res.json(response);
     }
-  } catch (e: any) {
-    log(`API error: ${e.message}`);
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    log(`API error: ${err.message}`);
     return res.status(500).json({ error: 'Server error' });
   }
 });
 
 app.post('/api/notes/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const { content, expiresAt, burnAfterReading } = req.body;
-  
+
   if (!id || id.length > MAX_ID_LENGTH) {
     return res.status(400).json({ error: 'Invalid ID' });
   }
@@ -187,20 +197,14 @@ app.post('/api/notes/:id', (req: Request, res: Response) => {
   if (content.length > MAX_CONTENT_LENGTH) {
     return res.status(400).json({ error: 'Content too large (max 100KB)' });
   }
-  
+
   try {
     const now = Date.now();
-    upsertNote.run(
-      id,
-      content,
-      expiresAt || null,
-      burnAfterReading ? 1 : 0,
-      now,
-      now
-    );
+    upsertNote.run(id, content, expiresAt || null, burnAfterReading ? 1 : 0, now, now);
     return res.json({ success: true });
-  } catch (e: any) {
-    log(`API error: ${e.message}`);
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error(String(e));
+    log(`API error: ${err.message}`);
     return res.status(500).json({ error: 'Server error' });
   }
 });
@@ -216,7 +220,7 @@ interface ExtendedWebSocket extends WebSocket {
 
 const rooms = new Map<string, Set<ExtendedWebSocket>>();
 
-function broadcast(id: string, sender: ExtendedWebSocket, data: any) {
+function broadcast(id: string, sender: ExtendedWebSocket, data: unknown) {
   const room = rooms.get(id);
   if (room) {
     room.forEach(client => {
@@ -259,7 +263,7 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
       const data = JSON.parse(message);
       if (data.type === 'update') {
         if (!data.content || typeof data.content !== 'string') return;
-        
+
         if (data.content.length > MAX_CONTENT_LENGTH) {
           ws.send(JSON.stringify({ type: 'error', message: 'Note too large (max 100KB)' }));
           return;
@@ -273,9 +277,9 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
           existing?.expires_at || null,
           existing?.burn_after_reading || 0,
           existing?.created_at || now,
-          now
+          now,
         );
-        
+
         broadcast(id, ws, { type: 'update', content: data.content });
       }
     } catch (e) {
@@ -294,7 +298,7 @@ wss.on('connection', (ws: ExtendedWebSocket, req) => {
   });
 });
 
-app.get('*', (req: Request, res: Response) => {
+app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

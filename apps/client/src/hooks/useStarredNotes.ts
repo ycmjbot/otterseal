@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface StarredNote {
   title: string;
@@ -28,12 +28,10 @@ export default function useStarredNotes() {
   }, [starred]);
 
   const isStarred = (title: string) => starred.some(s => s.title === title);
-  
+
   const toggle = (title: string) => {
-    setStarred(prev => 
-      isStarred(title)
-        ? prev.filter(t => t.title !== title)
-        : [...prev, { title }]
+    setStarred(prev =>
+      isStarred(title) ? prev.filter(t => t.title !== title) : [...prev, { title }],
     );
   };
 

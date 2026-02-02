@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { ArrowRight, Lock, Send, Shield, Sparkles, Zap } from 'lucide-react';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, ArrowRight, Sparkles, Shield, Zap, Send } from 'lucide-react';
 import Layout from '../components/Layout';
 
 export default function HomePage() {
@@ -33,7 +34,8 @@ export default function HomePage() {
             Welcome to OtterSeal
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            Zero-knowledge encrypted notes. No signup. No passwords.<br />
+            Zero-knowledge encrypted notes. No signup. No passwords.
+            <br />
             Just type a title and start writing.
           </p>
         </div>
@@ -45,10 +47,9 @@ export default function HomePage() {
             autoComplete="off"
             spellCheck="false"
             value={inputTitle}
-            onChange={(e) => setInputTitle(e.target.value)}
+            onChange={e => setInputTitle(e.target.value)}
             placeholder="Enter a note title..."
             className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
-            autoFocus
           />
           <div className="flex gap-3">
             <button
@@ -87,17 +88,23 @@ export default function HomePage() {
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
             <Shield className="w-6 h-6 text-green-500 mb-2" />
             <h3 className="font-semibold text-gray-900 dark:text-white">End-to-End Encrypted</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">AES-256 encryption. Server never sees your content.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              AES-256 encryption. Server never sees your content.
+            </p>
           </div>
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
             <Zap className="w-6 h-6 text-yellow-500 mb-2" />
             <h3 className="font-semibold text-gray-900 dark:text-white">Real-Time Sync</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Share the title. Collaborate instantly.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Share the title. Collaborate instantly.
+            </p>
           </div>
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl text-left">
             <Lock className="w-6 h-6 text-indigo-500 mb-2" />
             <h3 className="font-semibold text-gray-900 dark:text-white">Zero Knowledge</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Title = password. We can't recover it.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Title = password. We can't recover it.
+            </p>
           </div>
         </div>
       </div>

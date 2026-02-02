@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Moon, Sun, Star, Loader2, Check, WifiOff } from 'lucide-react';
 import clsx from 'clsx';
+import { Check, Loader2, Moon, Star, Sun, WifiOff } from 'lucide-react';
+import type React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
@@ -24,14 +24,14 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const currentTitle = (() => {
     const path = location.pathname;
     if (path === '/') return '';
     if (path === '/about') return 'About';
     if (path === '/send') return 'Send';
     if (path.startsWith('/send/')) return 'Send';
-    
+
     // For note pages, take everything after the first slash
     return decodeURIComponent(path.slice(1));
   })();
@@ -49,10 +49,11 @@ export default function Header({
     }
   };
 
-  const isNotePage = location.pathname !== '/' && 
-                     location.pathname !== '/about' && 
-                     location.pathname !== '/send' &&
-                     !location.pathname.startsWith('/send/');
+  const isNotePage =
+    location.pathname !== '/' &&
+    location.pathname !== '/about' &&
+    location.pathname !== '/send' &&
+    !location.pathname.startsWith('/send/');
 
   const showStar = isNotePage && currentTitle;
 
@@ -94,13 +95,23 @@ export default function Header({
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="flex items-center gap-3 min-w-0">
-        <button 
-          onClick={onOpenSidebar} 
+        <button
+          onClick={onOpenSidebar}
           className="p-2 -ml-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors lg:hidden"
         >
           <span className="sr-only">Menu</span>
-          <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <svg
+            className="w-5 h-5 text-gray-600 dark:text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
 
@@ -115,8 +126,8 @@ export default function Header({
               spellCheck="false"
               value={currentTitle}
               placeholder="Enter a note title..."
-              onChange={(e) => handleTitleChange(e.target.value)}
-              onKeyDown={(e) => {
+              onChange={e => handleTitleChange(e.target.value)}
+              onKeyDown={e => {
                 if (e.key === 'Enter') {
                   (e.target as HTMLInputElement).blur();
                 }
@@ -131,7 +142,7 @@ export default function Header({
                 <Star
                   className={clsx(
                     'w-4 h-4',
-                    isStarred(currentTitle) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'
+                    isStarred(currentTitle) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400',
                   )}
                 />
               </button>

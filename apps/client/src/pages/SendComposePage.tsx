@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { deriveKey, encryptNote, hashTitle } from '@otterseal/core';
+import { Clock, Flame, Loader2, Send } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { hashTitle, deriveKey, encryptNote } from '@otterseal/core';
-import { Send, Clock, Flame, Loader2 } from 'lucide-react';
 import Layout from '../components/Layout';
 
 const EXPIRY_OPTIONS = [
@@ -48,7 +48,7 @@ export default function SendComposePage() {
         throw new Error('Failed to create secret');
       }
 
-      navigate(`/send/${uuid}`, { state: { created: true } });
+      await navigate(`/send/${uuid}`, { state: { created: true } });
     } catch (e) {
       console.error('Create error:', e);
       setError('Failed to create secret. Please try again.');
@@ -65,11 +65,10 @@ export default function SendComposePage() {
           </label>
           <textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             placeholder="Type your secret message here..."
             rows={8}
             className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors resize-none"
-            autoFocus
           />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
             {message.length.toLocaleString()} characters
@@ -84,10 +83,10 @@ export default function SendComposePage() {
             </label>
             <select
               value={expiryValue ?? ''}
-              onChange={(e) => setExpiryValue(e.target.value ? Number(e.target.value) : null)}
+              onChange={e => setExpiryValue(e.target.value ? Number(e.target.value) : null)}
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
             >
-              {EXPIRY_OPTIONS.map((opt) => (
+              {EXPIRY_OPTIONS.map(opt => (
                 <option key={opt.label} value={opt.value ?? ''}>
                   {opt.label}
                 </option>

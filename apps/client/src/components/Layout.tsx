@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,7 +15,9 @@ export default function Layout({
   maxWidth = 'max-w-4xl',
 }: LayoutProps) {
   return (
-    <main className={`flex-1 relative p-4 md:p-8 ${maxWidth} md:mx-auto w-full ${centerContent ? 'flex items-center justify-center' : ''}`}>
+    <main
+      className={`flex-1 relative p-4 md:p-8 ${maxWidth} md:mx-auto w-full ${centerContent ? 'flex items-center justify-center' : ''}`}
+    >
       {children}
     </main>
   );

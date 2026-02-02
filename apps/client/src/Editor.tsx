@@ -1,15 +1,15 @@
+import { CodeNode } from '@lexical/code';
+import { AutoLinkNode, LinkNode } from '@lexical/link';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { TRANSFORMERS } from '@lexical/markdown';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { ListNode, ListItemNode } from "@lexical/list";
-import { CodeNode } from "@lexical/code";
-import { LinkNode, AutoLinkNode } from "@lexical/link";
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import { TRANSFORMERS } from '@lexical/markdown';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { useEffect, useRef } from 'react';
 
 const lexicalTheme = {
@@ -23,53 +23,53 @@ const lexicalTheme = {
     ul: 'list-disc list-inside mb-4 ml-4',
     ol: 'list-decimal list-inside mb-4 ml-4',
   },
-  quote: 'border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 mb-4',
+  quote:
+    'border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 mb-4',
   code: 'font-mono bg-gray-100 dark:bg-gray-800 p-1 rounded text-sm',
   text: {
     bold: 'font-bold',
     italic: 'italic',
     underline: 'underline',
     strikethrough: 'line-through',
-  }
+  },
 };
 
 function UpdatePlugin({ initialJSON }: { initialJSON: string }) {
-    const [editor] = useLexicalComposerContext();
-    const isFirstRun = useRef(true);
+  const [editor] = useLexicalComposerContext();
+  const isFirstRun = useRef(true);
 
-    useEffect(() => {
-        if (isFirstRun.current && initialJSON) {
-            isFirstRun.current = false;
-            try {
-                const state = editor.parseEditorState(initialJSON);
-                editor.setEditorState(state);
-            } catch (e) {
-                console.error("Failed to parse initial JSON", e);
-            }
-        }
-    }, [initialJSON, editor]);
+  useEffect(() => {
+    if (isFirstRun.current && initialJSON) {
+      isFirstRun.current = false;
+      try {
+        const state = editor.parseEditorState(initialJSON);
+        editor.setEditorState(state);
+      } catch (e) {
+        console.error('Failed to parse initial JSON', e);
+      }
+    }
+  }, [initialJSON, editor]);
 
-    return null;
+  return null;
 }
-
 
 // External control plugin to force update when remote changes happen
 function RemoteUpdatePlugin({ json }: { json: string }) {
-    const [editor] = useLexicalComposerContext();
-    const lastJsonRef = useRef(json);
+  const [editor] = useLexicalComposerContext();
+  const lastJsonRef = useRef(json);
 
-    useEffect(() => {
-        if (json && json !== lastJsonRef.current) {
-            lastJsonRef.current = json;
-            try {
-                const state = editor.parseEditorState(json);
-                editor.setEditorState(state);
-            } catch (e) {
-                 console.error("Failed to sync remote JSON", e);
-            }
-        }
-    }, [json, editor]);
-    return null;
+  useEffect(() => {
+    if (json && json !== lastJsonRef.current) {
+      lastJsonRef.current = json;
+      try {
+        const state = editor.parseEditorState(json);
+        editor.setEditorState(state);
+      } catch (e) {
+        console.error('Failed to sync remote JSON', e);
+      }
+    }
+  }, [json, editor]);
+  return null;
 }
 
 interface EditorProps {
@@ -83,7 +83,7 @@ export default function Editor({ initialContent, onChange, remoteContent }: Edit
     namespace: 'SecurePad',
     theme: lexicalTheme,
     onError: console.error,
-    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CodeNode, LinkNode, AutoLinkNode]
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CodeNode, LinkNode, AutoLinkNode],
   };
 
   return (
@@ -98,14 +98,16 @@ export default function Editor({ initialContent, onChange, remoteContent }: Edit
               Start typing... (Markdown supported)
             </div>
           }
-          ErrorBoundary={({children}) => <>{children}</>}
+          ErrorBoundary={({ children }) => <>{children}</>}
         />
         <HistoryPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-        <OnChangePlugin onChange={(editorState) => {
-             const json = JSON.stringify(editorState.toJSON());
-             onChange(json);
-        }} />
+        <OnChangePlugin
+          onChange={editorState => {
+            const json = JSON.stringify(editorState.toJSON());
+            onChange(json);
+          }}
+        />
         {initialContent && <UpdatePlugin initialJSON={initialContent} />}
         {remoteContent && <RemoteUpdatePlugin json={remoteContent} />}
       </div>

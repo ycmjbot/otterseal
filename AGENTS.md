@@ -159,3 +159,62 @@ cd ~/apps/otterseal
 pnpm build
 otterway sync otterseal
 ```
+
+---
+
+## Code Standards & Guidelines
+
+### Strict TypeScript
+- **No `any` types** — Use explicit types or generics.
+- **Strict mode enabled** — All code must type-check without errors.
+- **Type aliases over interfaces** — Use `type` for consistency and flexibility (unions, mapped types).
+
+### Naming Conventions
+- **Files**: kebab-case (e.g., `user-profile.ts`, `note-reader.ts`)
+- **Functions/Variables**: camelCase
+- **Types/Interfaces**: PascalCase (e.g., `UserProfile`, `NoteContent`)
+- **Zod Schemas**: PascalCase (e.g., `NoteSchema`, `SecretSchema`)
+
+### Exports
+- **Default Exports**: Only when required by framework (lazy loading, specific routing).
+- **Named Exports**: Preferred for everything else.
+- **Contextual Names**: Include domain context in component names.
+  - ✅ `NotesEmptyState`, `SecretsEmptyState`
+  - ❌ `EmptyState`
+
+### Code Style (via Biome)
+- **Semicolons**: Always
+- **Trailing Commas**: All
+- **Arrow Parentheses**: As needed
+- **Quote Style**: Single quotes
+- **Line Width**: 100 characters
+- **Import Organization**: Automatic (Biome)
+
+### Best Practices
+- **Inline Simple Callbacks**: Don't create intermediate variables for single-use callbacks.
+  - ✅ `<Component onAction={() => doSomething()} />`
+  - ❌ `const handleAction = () => doSomething(); <Component onAction={handleAction} />`
+- **Destructure Props**: Use destructuring directly in function parameters.
+- **Avoid Dangling Variables**: Keep scope tight; inline conditional logic when possible.
+- **Declarative over Imperative**: Use `.map()`, `.filter()`, `.reduce()` over loops.
+
+### Testing
+- **Colocate Tests**: Place tests next to source files (e.g., `button.test.ts` next to `button.ts`).
+- **Unit Tests**: Test logic, business rules.
+- **Component Tests**: Test UI behavior with React Testing Library.
+
+### Pre-Commit Checks
+Before pushing, the following run automatically:
+1. **repojj**: Repository structure validation
+2. **Biome**: Linting and formatting
+3. **TypeCheck**: Type validation (tsgo)
+
+If any check fails, fix and re-commit.
+
+### Running Checks Manually
+```bash
+pnpm lint              # Run Biome linter
+pnpm lint:fix          # Auto-fix Biome issues
+pnpm typecheck         # Run tsgo type checker
+pnpm format            # Format all files
+```

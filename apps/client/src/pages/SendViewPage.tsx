@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
-import { hashTitle, deriveKey, decryptNote } from '@otterseal/core';
+import { decryptNote, deriveKey, hashTitle } from '@otterseal/core';
 import {
-  Mail,
-  MailOpen,
-  Copy,
+  AlertTriangle,
   Check,
   Clock,
+  Copy,
   Flame,
-  AlertTriangle,
-  XCircle,
+  Mail,
+  MailOpen,
   Send,
   Share2,
+  XCircle,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 interface SecretMetadata {
@@ -32,7 +32,7 @@ export default function SendViewPage() {
   const [linkCopied, setLinkCopied] = useState(false);
 
   const title = `/send/${uuid}`;
-  const shareUrl = window.location.origin + `/send/${uuid}`;
+  const shareUrl = `${window.location.origin}/send/${uuid}`;
 
   useEffect(() => {
     async function loadMetadata() {
@@ -128,7 +128,7 @@ export default function SendViewPage() {
         console.error('Share failed:', err);
       }
     } else {
-      handleCopyLink();
+      await handleCopyLink();
     }
   };
 
@@ -198,12 +198,19 @@ export default function SendViewPage() {
                 onClick={handleCopyContent}
                 className="absolute top-3 right-3 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
               >
-                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                )}
               </button>
             </div>
 
             <div className="text-center pt-4">
-              <Link to="/send" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline">
+              <Link
+                to="/send"
+                className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
                 <Send className="w-4 h-4" />
                 Create your own secret
               </Link>
@@ -239,7 +246,9 @@ export default function SendViewPage() {
             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
               <AlertTriangle className="w-12 h-12 text-amber-600 dark:text-amber-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Something went wrong</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Something went wrong
+            </h2>
             <p className="text-gray-500 dark:text-gray-400 mb-8">
               We couldn't load the message. Please try again later.
             </p>
@@ -265,13 +274,19 @@ export default function SendViewPage() {
                   readOnly
                   value={shareUrl}
                   className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-green-300 dark:border-green-700 rounded-lg text-gray-700 dark:text-gray-300 truncate"
-                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                 />
-                <button onClick={handleCopyLink} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                <button
+                  onClick={handleCopyLink}
+                  className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                >
                   {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </button>
                 {typeof navigator.share === 'function' && (
-                  <button onClick={handleShare} className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                  <button
+                    onClick={handleShare}
+                    className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  >
                     <Share2 className="w-4 h-4" />
                   </button>
                 )}

@@ -10,9 +10,7 @@
     "memory": "256m",
     "pidsLimit": 100
   },
-  "volumes": [
-    "./data:/app/data:Z"
-  ],
+  "volumes": ["./data:/app/data:Z"],
   "env": {
     "NODE_ENV": "production"
   }

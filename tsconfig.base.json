@@ -2,12 +2,21 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "strict": true,
+    "noEmit": true,
+    "lib": ["ESNext"],
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
-    "noUncheckedIndexedAccess": true
+    "verbatimModuleSyntax": true,
+    "types": [],
+    "composite": true
   }
 }

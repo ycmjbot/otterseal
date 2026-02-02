@@ -1,0 +1,5 @@
+pre-commit:
+  jobs:
+    - run: pnpm lint:fix
+      stage_fixed: true
+    - run: pnpm typecheck

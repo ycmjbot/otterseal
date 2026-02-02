@@ -2,14 +2,25 @@
   "name": "otterseal-monorepo",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "pnpm --filter \"*\" dev",
-    "build": "pnpm --filter \"*\" build",
-    "start": "pnpm --filter server start"
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm --parallel -r build",
+    "test": "pnpm --parallel -r test run",
+    "typecheck": "tsc -b --force",
+    "lint": "biome lint .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "repojj:check": "repojj check",
+    "repojj:postfix": "pnpm lint:fix"
   },
   "devDependencies": {
-    "concurrently": "catalog:",
-    "pkgroll": "^2.23.0"
+    "@biomejs/biome": "catalog:",
+    "@rslint/tsgo": "^0.2.0",
+    "@types/node": "catalog:",
+    "lefthook": "catalog:",
+    "repojj": "catalog:",
+    "typescript": "catalog:"
   },
   "packageManager": "pnpm@10.28.2"
 }

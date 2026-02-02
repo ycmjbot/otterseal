@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { decryptNote, deriveKey, encryptNote, hashTitle } from '@otterseal/core';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { hashTitle, deriveKey, encryptNote, decryptNote } from '@otterseal/core';
-import Editor from '../Editor';
 import Layout from '../components/Layout';
+import Editor from '../Editor';
 
 interface NotePageProps {
   onStatusChange?: (status: string | null) => void;
@@ -45,8 +45,12 @@ export default function NotePage({ onStatusChange }: NotePageProps) {
     if (!jsonStr) return true;
     try {
       const data = JSON.parse(jsonStr);
-      const hasText = (node: any): boolean => {
-        if (node.text && node.text.trim()) return true;
+      interface LexicalNode {
+        text?: string;
+        children?: LexicalNode[];
+      }
+      const hasText = (node: LexicalNode): boolean => {
+        if (node.text?.trim()) return true;
         if (node.children) return node.children.some(hasText);
         return false;
       };
@@ -143,7 +147,7 @@ export default function NotePage({ onStatusChange }: NotePageProps) {
 
     ws.onopen = () => setStatus('connected');
 
-    ws.onmessage = async (event) => {
+    ws.onmessage = async event => {
       try {
         const msg = JSON.parse(event.data);
         if (msg.type === 'error') {
@@ -173,8 +177,10 @@ export default function NotePage({ onStatusChange }: NotePageProps) {
     ws.onclose = () => {
       setStatus('error');
       setTimeout(() => {
-        if (wsRef.current?.readyState === WebSocket.CLOSED && 
-            window.location.pathname.includes(encodeURIComponent(currentTitle))) {
+        if (
+          wsRef.current?.readyState === WebSocket.CLOSED &&
+          window.location.pathname.includes(encodeURIComponent(currentTitle))
+        ) {
           connectWS(id, k, currentTitle);
         }
       }, 3000);
