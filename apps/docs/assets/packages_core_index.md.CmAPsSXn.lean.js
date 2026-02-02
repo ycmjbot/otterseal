@@ -1,0 +1,11 @@
+import { o as a, ae as e, _ as i, c as t } from './chunks/framework.9XX48Qcy.js';
+
+const c = JSON.parse(
+    '{"title":"@otterseal/core","description":"","frontmatter":{},"headers":[],"relativePath":"packages/core/index.md","filePath":"packages/core/index.md"}',
+  ),
+  n = { name: 'packages/core/index.md' };
+function l(h, s, r, p, k, o) {
+  return a(), t('div', null, [...(s[0] || (s[0] = [e('', 23)]))]);
+}
+const y = i(n, [['render', l]]);
+export { c as __pageData, y as default };

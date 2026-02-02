@@ -1,0 +1,11 @@
+import { o as a, ae as e, _ as i, c as t } from './chunks/framework.9XX48Qcy.js';
+
+const c = JSON.parse(
+    '{"title":"API Reference","description":"","frontmatter":{},"headers":[],"relativePath":"packages/core/api.md","filePath":"packages/core/api.md"}',
+  ),
+  n = { name: 'packages/core/api.md' };
+function l(r, s, h, p, k, o) {
+  return a(), t('div', null, [...(s[0] || (s[0] = [e('', 62)]))]);
+}
+const y = i(n, [['render', l]]);
+export { c as __pageData, y as default };
