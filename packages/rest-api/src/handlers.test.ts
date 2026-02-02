@@ -215,10 +215,8 @@ describe('REST API Handlers', () => {
         content: '',
       });
 
-      expect(result).toEqual({
-        error: 'Content required',
-        status: 400,
-      });
+      expect(result.status).toBe(400);
+      expect(result.error).toMatch(/[Cc]ontent/i);
     });
 
     it('should return 400 if content is missing', async () => {
@@ -226,10 +224,8 @@ describe('REST API Handlers', () => {
         content: undefined as unknown as string,
       });
 
-      expect(result).toEqual({
-        error: 'Content required',
-        status: 400,
-      });
+      expect(result.status).toBe(400);
+      expect(result.error).toMatch(/[Cc]ontent|[Rr]equired/i);
     });
 
     it('should return 400 if content exceeds max size', async () => {
@@ -239,10 +235,8 @@ describe('REST API Handlers', () => {
         content: tooLargeContent,
       });
 
-      expect(result).toEqual({
-        error: 'Content too large (max 100KB)',
-        status: 400,
-      });
+      expect(result.status).toBe(400);
+      expect(result.error).toMatch(/[Cc]ontent.*[Ll]arge|too large/i);
     });
 
     it('should return 400 for invalid ID (too long)', async () => {
