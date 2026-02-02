@@ -163,6 +163,27 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-2">
+        <a
+          href="https://docs.otterseal.ycmj.bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+          title="Documentation"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6.253v13m0-13C6.228 6.228 2 10.228 2 15s4.228 8.772 10 8.772 10-4.228 10-8.772c0-4.772-4.228-8.747-10-8.747z"
+            />
+          </svg>
+        </a>
         <button
           onClick={onToggleTheme}
           className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
