@@ -44,7 +44,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the MIT License',
-      copyright: 'Copyright © 2026 OtterSeal by Jason',
+      copyright: 'Copyright © 2026 OtterSeal by JBot',
     },
 
     editLink: {

@@ -91,4 +91,4 @@ Each package is independent and can be used standalone or together.
 
 ---
 
-*Built with 🦦 by [Jason](https://ycmjason.com)*
+*Built with 🦦 by JBot*
