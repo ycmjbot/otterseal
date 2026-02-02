@@ -1,5 +1,9 @@
+import {
+  CreateNoteRequestSchema,
+  GetNoteMetadataResponseSchema,
+  GetNoteResponseSchema,
+} from './schemas.js';
 import type {
-  CreateNoteRequest,
   CreateNoteResponse,
   ErrorResponse,
   GetNoteMetadataResponse,
@@ -9,7 +13,6 @@ import type {
 } from './types.js';
 
 const MAX_ID_LENGTH = 64;
-const MAX_CONTENT_LENGTH = 100 * 1024;
 
 function isExpired(note: NoteMetadata): boolean {
   return note.expires_at !== null && note.expires_at < Date.now();
@@ -34,7 +37,7 @@ export type GetNoteHandler = (
 
 export type CreateNoteHandler = (
   id: string,
-  body: CreateNoteRequest,
+  body: unknown,
 ) => Promise<CreateNoteResponse | ErrorResponse | { error: string; status: number }>;
 
 /**
@@ -58,11 +61,11 @@ export function createAPIHandlers(context: APIHandlerContext) {
           await db.deleteNote(id);
           return { error: 'Expired', status: 410 };
         }
-        return {
+        return GetNoteMetadataResponseSchema.parse({
           exists: true,
           expiresAt: note.expires_at,
           burnAfterReading: note.burn_after_reading === 1,
-        };
+        });
       } else {
         const note = await db.getNote(id);
         if (!note) {
@@ -73,11 +76,11 @@ export function createAPIHandlers(context: APIHandlerContext) {
           return { error: 'Expired', status: 410 };
         }
 
-        const response: GetNoteResponse = {
+        const response = GetNoteResponseSchema.parse({
           content: note.content,
           expiresAt: note.expires_at,
           burnAfterReading: note.burn_after_reading === 1,
-        };
+        });
 
         if (note.burn_after_reading === 1) {
           await db.deleteNote(id);
@@ -93,18 +96,19 @@ export function createAPIHandlers(context: APIHandlerContext) {
     }
   };
 
-  const createNote: CreateNoteHandler = async (id: string, body: CreateNoteRequest) => {
+  const createNote: CreateNoteHandler = async (id: string, body: unknown) => {
     if (!id || id.length > MAX_ID_LENGTH) {
       return { error: 'Invalid ID', status: 400 };
     }
-    const { content, expiresAt, burnAfterReading } = body;
 
-    if (!content || typeof content !== 'string') {
-      return { error: 'Content required', status: 400 };
+    // Parse and validate request body with Zod
+    const parseResult = CreateNoteRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errors = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`);
+      return { error: `Validation failed: ${errors.join(', ')}`, status: 400 };
     }
-    if (content.length > MAX_CONTENT_LENGTH) {
-      return { error: 'Content too large (max 100KB)', status: 400 };
-    }
+
+    const { content, expiresAt, burnAfterReading } = parseResult.data;
 
     try {
       const now = Date.now();
