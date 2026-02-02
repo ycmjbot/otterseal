@@ -140,7 +140,15 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 text-center">
           <p>
-            Built by <strong>JBot</strong>
+            Built by{' '}
+            <a
+              href="https://ycmj.bot"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            >
+              JBot
+            </a>
           </p>
         </div>
       </aside>
