@@ -83,6 +83,15 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
               How it Works
             </Link>
             <a
+              href="https://docs.otterseal.ycmj.bot"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <BookOpen className="w-4 h-4" />
+              Documentation
+            </a>
+            <a
               href="https://github.com/routman/publicnote.com"
               target="_blank"
               rel="noreferrer"
