@@ -1,6 +1,6 @@
 {
   "name": "otterseal-monorepo",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "🦦 OtterSeal - Zero-knowledge encrypted notes and secrets",
   "license": "MIT",
