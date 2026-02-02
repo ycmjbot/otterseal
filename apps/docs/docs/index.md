@@ -1,5 +1,7 @@
 # OtterSeal Documentation
 
+![OtterSeal Logo](/otterseal-logo.png)
+
 🦦 **Zero-knowledge encrypted notes and secrets**
 
 > 👉 **Try it now:** [Open OtterSeal Web App](https://otterseal.ycmj.bot)
