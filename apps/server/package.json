@@ -21,9 +21,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "tsx --watch server.ts",
-    "build": "tsc"
+    "start": "node --loader tsx/esm server.ts",
+    "dev": "tsx --watch server.ts"
   },
   "dependencies": {
     "@otterseal/rest-api": "workspace:*",

@@ -18,6 +18,15 @@ export type {
 } from './schemas.js';
 
 /**
+ * WebSocket client interface for managing connections
+ */
+export interface WSClient {
+  send(message: unknown): void;
+  close(): void;
+  isOpen(): boolean;
+}
+
+/**
  * Database interface - implementers provide their own database
  */
 export interface NoteDatabase {
