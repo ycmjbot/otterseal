@@ -1,93 +1,80 @@
 import { ArrowRight, Lock, Send, Shield, Sparkles, Zap } from 'lucide-react';
-import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 
+const RANDOM_WORDS = [
+  'apple',
+  'beach',
+  'brain',
+  'bread',
+  'brush',
+  'chair',
+  'chest',
+  'chord',
+  'click',
+  'clock',
+  'cloud',
+  'dance',
+  'diary',
+  'drink',
+  'earth',
+  'flute',
+  'fruit',
+  'glass',
+  'grape',
+  'green',
+  'guava',
+  'heart',
+  'honey',
+  'house',
+  'juice',
+  'light',
+  'lemon',
+  'mango',
+  'melon',
+  'money',
+  'music',
+  'night',
+  'ocean',
+  'paint',
+  'paper',
+  'party',
+  'piano',
+  'pilot',
+  'plane',
+  'phone',
+  'pizza',
+  'plant',
+  'radio',
+  'river',
+  'robot',
+  'shirt',
+  'shoes',
+  'smile',
+  'snake',
+  'space',
+  'spoon',
+  'storm',
+  'table',
+  'tiger',
+  'toast',
+  'touch',
+  'train',
+  'truck',
+  'voice',
+  'water',
+  'watch',
+  'whale',
+  'world',
+  'write',
+  'youth',
+  'zebra',
+];
+
 export default function HomePage() {
   const [inputTitle, setInputTitle] = useState('');
   const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = inputTitle.trim();
-    if (trimmed) {
-      navigate(`/${encodeURIComponent(trimmed)}`);
-    }
-  };
-
-  const handleRandom = () => {
-    const words = [
-      'apple',
-      'beach',
-      'brain',
-      'bread',
-      'brush',
-      'chair',
-      'chest',
-      'chord',
-      'click',
-      'clock',
-      'cloud',
-      'dance',
-      'diary',
-      'drink',
-      'earth',
-      'flute',
-      'fruit',
-      'glass',
-      'grape',
-      'green',
-      'guava',
-      'heart',
-      'honey',
-      'house',
-      'juice',
-      'light',
-      'lemon',
-      'mango',
-      'melon',
-      'money',
-      'music',
-      'night',
-      'ocean',
-      'paint',
-      'paper',
-      'party',
-      'piano',
-      'pilot',
-      'plane',
-      'phone',
-      'pizza',
-      'plant',
-      'radio',
-      'river',
-      'robot',
-      'shirt',
-      'shoes',
-      'smile',
-      'snake',
-      'space',
-      'spoon',
-      'storm',
-      'table',
-      'tiger',
-      'toast',
-      'touch',
-      'train',
-      'truck',
-      'voice',
-      'water',
-      'watch',
-      'whale',
-      'world',
-      'write',
-      'youth',
-      'zebra',
-    ];
-    const randomWord = words[Math.floor(Math.random() * words.length)];
-    navigate(`/${randomWord}`);
-  };
 
   return (
     <Layout centerContent maxWidth="max-w-xl">
@@ -106,7 +93,16 @@ export default function HomePage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            const trimmed = inputTitle.trim();
+            if (trimmed) {
+              navigate(`/${encodeURIComponent(trimmed)}`);
+            }
+          }}
+          className="space-y-4"
+        >
           <input
             type="text"
             name="note-title-home"
@@ -128,7 +124,10 @@ export default function HomePage() {
             </button>
             <button
               type="button"
-              onClick={handleRandom}
+              onClick={() => {
+                const randomWord = RANDOM_WORDS[Math.floor(Math.random() * RANDOM_WORDS.length)];
+                navigate(`/${randomWord}`);
+              }}
               className="px-6 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors flex items-center gap-2"
             >
               <Sparkles className="w-5 h-5" />
@@ -141,7 +140,7 @@ export default function HomePage() {
           <button
             type="button"
             onClick={() => navigate('/send')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-teal-500 hover:from-primary/90 hover:to-teal-500/90 text-primary-foreground font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-teal-500 hover:from-primary/90 hover:to-teal-500/90 text-primary-foreground font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
           >
             <Send className="w-5 h-5" />
             Send a One-Time Secret
