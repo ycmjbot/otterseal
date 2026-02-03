@@ -197,7 +197,7 @@ interface ExtendedWebSocket extends WebSocket {
 // Adapter to convert ws library to WSClient interface
 function createWSClientAdapter(ws: ExtendedWebSocket): WSClient {
   return {
-    send(message: any) {
+    send(message: unknown) {
       ws.send(JSON.stringify(message));
     },
     close() {

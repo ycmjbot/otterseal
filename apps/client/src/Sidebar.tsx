@@ -89,7 +89,7 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
               href={import.meta.env.VITE_DOCS_URL || 'https://docs.otterseal.ycmj.bot'}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <BookOpen className="w-4 h-4" />
               Documentation
