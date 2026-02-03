@@ -25,6 +25,7 @@ catalog:
   clsx: ^2.1.1
   cors: ^2.8.6
   express: ^5.2.1
+  express-rate-limit: ^8.2.1
   lefthook: ^2.0.16
   lexical: ^0.40.0
   lucide-react: ^0.563.0

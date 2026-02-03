@@ -28,6 +28,7 @@
     "@otterseal/rest-api": "workspace:*",
     "cors": "catalog:",
     "express": "catalog:",
+    "express-rate-limit": "catalog:",
     "ws": "catalog:"
   },
   "devDependencies": {

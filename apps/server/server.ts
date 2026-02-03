@@ -13,7 +13,9 @@ import {
   type WSUpdateMessage,
 } from '@otterseal/rest-api';
 import cors from 'cors';
-import express, { type NextFunction, type Request, type Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { WebSocket, WebSocketServer } from 'ws';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +37,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rate limiting
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+});
+
+const creationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  limit: 5, // Limit each IP to 5 requests per minute
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { status: 429, error: 'Too many requests, please try again later.' },
+});
+
+app.use(generalLimiter);
+
 // Security headers
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Referrer-Policy', 'no-referrer');
@@ -43,6 +63,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
   }
   next();
+});
+
+// Health check
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok' });
 });
 
 // Database Setup
@@ -86,7 +111,14 @@ const db: NoteDatabase = {
     return stmt.get(id) as unknown as NoteMetadata | undefined;
   },
 
-  async upsertNote(id, content, expiresAt, burnAfterReading, createdAt, updatedAt) {
+  async upsertNote(
+    id: string,
+    content: string,
+    expiresAt: number | null,
+    burnAfterReading: boolean,
+    createdAt: number,
+    updatedAt: number,
+  ) {
     const stmt = sqliteDb.prepare(`
       INSERT INTO notes (id, content, expires_at, burn_after_reading, created_at, updated_at) 
       VALUES (?, ?, ?, ?, ?, ?)
@@ -121,7 +153,7 @@ const wsManager = new WSManager({ db, logger: log });
 
 // Cleanup expired notes every minute
 setInterval(() => {
-  wsManager.cleanupExpiredNotes().catch(e => {
+  wsManager.cleanupExpiredNotes().catch((e: unknown) => {
     const err = e instanceof Error ? e : new Error(String(e));
     log(`Cleanup error: ${err.message}`);
   });
@@ -141,7 +173,7 @@ app.get('/api/notes/:id', async (req: Request, res: Response) => {
   }
 });
 
-app.post('/api/notes/:id', async (req: Request, res: Response) => {
+app.post('/api/notes/:id', creationLimiter, async (req: Request, res: Response) => {
   const id = String(req.params.id);
 
   const result = await apiHandlers.createNote(id, req.body);
@@ -165,7 +197,7 @@ interface ExtendedWebSocket extends WebSocket {
 // Adapter to convert ws library to WSClient interface
 function createWSClientAdapter(ws: ExtendedWebSocket): WSClient {
   return {
-    send(message) {
+    send(message: any) {
       ws.send(JSON.stringify(message));
     },
     close() {
@@ -197,7 +229,7 @@ wss.on('connection', async (ws: ExtendedWebSocket, req) => {
       if (data.type === 'update') {
         await wsManager.onClientMessage(id, client, data as WSUpdateMessage);
       }
-    } catch (e) {
+    } catch (e: unknown) {
       const err = e instanceof Error ? e : new Error(String(e));
       log(`WS parse error: ${err.message}`);
     }
@@ -216,3 +248,27 @@ const PORT = Number(process.env.PORT) || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Graceful Shutdown
+function gracefulShutdown(signal: string) {
+  log(`Received ${signal}. Shutting down gracefully...`);
+  server.close(() => {
+    log('HTTP server closed.');
+    try {
+      sqliteDb.close();
+      log('Database connection closed.');
+    } catch (err) {
+      log(`Error closing database: ${err instanceof Error ? err.message : String(err)}`);
+    }
+    process.exit(0);
+  });
+
+  // Force exit after 10 seconds
+  setTimeout(() => {
+    log('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 10000);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
