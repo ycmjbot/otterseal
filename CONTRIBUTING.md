@@ -4,7 +4,7 @@ First off, thank you for considering contributing to OtterSeal! It's people like
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 20 or higher
+- [Node.js](https://nodejs.org/) 24 or higher
 - [pnpm](https://pnpm.io/)
 
 ## Setup

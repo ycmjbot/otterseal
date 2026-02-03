@@ -70,7 +70,7 @@ Create `~/.oseal.json`:
 ## Development
 
 ### Prerequisites
-- Node.js v20+
+- Node.js v24+
 - pnpm
 
 ### Setup

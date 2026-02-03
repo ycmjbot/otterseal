@@ -34,6 +34,9 @@
     "repojj:check": "repojj check",
     "repojj:postfix": "pnpm check:fix"
   },
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@rslint/tsgo": "catalog:",
