@@ -21,13 +21,13 @@ First off, thank you for considering contributing to OtterSeal! It's people like
 
 ## Code Style
 
-We use [Biome](https://biomejs.dev/) for linting and formatting. You can run the linter using:
+We use [Biome](https://biomejs.dev/) for linting and formatting. You can run the checks using:
 
 ```bash
-pnpm lint
+pnpm check
 ```
 
-Please ensure there are no linting errors before submitting a pull request.
+Please ensure there are no errors before submitting a pull request.
 
 ## Testing
 

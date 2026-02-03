@@ -40,7 +40,9 @@ jobs:
         run: pnpm typecheck
 
       - name: Build
-        run: pnpm build
+        run: |
+          pnpm check
+          pnpm build
 
       - name: Publish to NPM (OIDC)
         run: pnpm -r publish --no-git-checks --access public
