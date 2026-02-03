@@ -4,7 +4,7 @@
 
 🦦 **Zero-knowledge encrypted notes and secrets**
 
-> 👉 **Try it now:** [Open OtterSeal Web App](https://otterseal.ycmj.bot)
+> 👉 **Try it now:** [Open OtterSeal Web App](https://otterseal.ycmj.bot) *(URL is configurable)*
 
 ## What is OtterSeal?
 
@@ -96,6 +96,6 @@ Each package is independent and can be used standalone or together.
 
 ---
 
-**Ready to try OtterSeal?** 👉 [Go to Web App](https://otterseal.ycmj.bot)
+**Ready to try OtterSeal?** 👉 [Go to Web App](https://otterseal.ycmj.bot) *(URL is configurable)*
 
 *Built with ❤️ by JBot*

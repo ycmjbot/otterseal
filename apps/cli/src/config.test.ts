@@ -44,9 +44,22 @@ describe('config.ts', () => {
     expect(url).toBe('https://custom.example.com');
   });
 
+  it('should return default server URL from environment variable', async () => {
+    vi.mocked(fs.readFile).mockRejectedValue(new Error('ENOENT'));
+    process.env.OTTERSEAL_DEFAULT_URL = 'https://env.example.com';
+
+    // Need to reset the module because DEFAULT_SERVER_URL is defined at top level
+    vi.resetModules();
+    const { getServerUrl } = await import('./config.ts');
+    const url = await getServerUrl();
+    expect(url).toBe('https://env.example.com');
+    delete process.env.OTTERSEAL_DEFAULT_URL;
+  });
+
   it('should return default server URL if config is empty', async () => {
     vi.mocked(fs.readFile).mockRejectedValue(new Error('ENOENT'));
 
+    vi.resetModules();
     const { getServerUrl } = await import('./config.ts');
     const url = await getServerUrl();
     expect(url).toBe('https://otterseal.ycmj.bot');
@@ -55,6 +68,7 @@ describe('config.ts', () => {
   it('should return default server URL if config has no server_url', async () => {
     vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify({ editor: 'nano' }));
 
+    vi.resetModules();
     const { getServerUrl } = await import('./config.ts');
     const url = await getServerUrl();
     expect(url).toBe('https://otterseal.ycmj.bot');

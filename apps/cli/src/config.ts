@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-const DEFAULT_SERVER_URL = 'https://otterseal.ycmj.bot';
+const DEFAULT_SERVER_URL = process.env.OTTERSEAL_DEFAULT_URL || 'https://otterseal.ycmj.bot';
 const CONFIG_FILE = path.join(os.homedir(), '.oseal.json');
 
 export async function loadConfig() {

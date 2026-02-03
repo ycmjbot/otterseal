@@ -97,7 +97,7 @@ export default function AboutPage() {
           </p>
           <div className="bg-gray-900 text-gray-100 p-3 rounded-lg mb-3 overflow-hidden">
             <code className="text-xs block break-all">
-              https://otterseal.ycmj.bot/s/abc123#encryption-key-here
+              {`${window.location.origin}/s/abc123#encryption-key-here`}
             </code>
           </div>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
