@@ -1,6 +1,6 @@
 {
   "name": "@otterseal/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "🦦 OtterSeal shared cryptography utilities - AES-256-GCM encryption with HKDF key derivation",
   "license": "MIT",
   "repository": {
@@ -25,6 +25,8 @@
   },
   "publishConfig": {
     "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org",
     "exports": {
       ".": {
         "import": "./dist/index.js",
@@ -41,6 +43,6 @@
     "typescript": "catalog:"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24"
   }
 }

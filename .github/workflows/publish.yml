@@ -4,48 +4,30 @@ on:
   push:
     branches: [main]
     paths:
-      - 'package.json'
-      - 'packages/*/package.json'
-      - 'apps/cli/package.json'
+      - "packages/*/package.json"
+      - "apps/cli/package.json"
 
 permissions:
+  id-token: write # Required for OIDC
   contents: read
-  id-token: write
 
 jobs:
   publish:
-    name: Publish Packages
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.28.2
+          node-version-file: "package.json"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
-        run: pnpm typecheck
+      - run: pnpm build
 
-      - name: Build
-        run: |
-          pnpm check
-          pnpm build
-
-      - name: Publish to NPM (OIDC)
-        run: pnpm -r publish --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+      - run: pnpm -r publish

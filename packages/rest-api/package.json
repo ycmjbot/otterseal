@@ -1,12 +1,19 @@
 {
   "name": "@otterseal/rest-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjbot/otterseal.git",
+    "directory": "packages/rest-api"
+  },
   "publishConfig": {
     "access": "public",
+    "registry": "https://registry.npmjs.org",
+    "provenance": true,
     "exports": {
       ".": {
         "import": "./dist/index.js",
@@ -24,5 +31,8 @@
   "devDependencies": {
     "pkgroll": "catalog:",
     "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

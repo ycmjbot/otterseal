@@ -1,6 +1,6 @@
 {
   "name": "@otterseal/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "🦦 OtterSeal CLI - Zero-knowledge encrypted secrets and notes from the command line",
   "license": "MIT",
   "repository": {
@@ -29,6 +29,8 @@
     "README.md"
   ],
   "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "provenance": true,
     "access": "public"
   },
   "scripts": {
