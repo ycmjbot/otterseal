@@ -6,7 +6,7 @@ export default defineConfig({
   appearance: 'dark',
 
   themeConfig: {
-    logo: '🦦',
+    logo: '/otterseal-logo.png',
     siteTitle: 'OtterSeal',
 
     nav: [
