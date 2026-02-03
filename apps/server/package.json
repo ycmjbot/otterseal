@@ -21,14 +21,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node --loader tsx/esm server.ts",
-    "dev": "tsx --watch server.ts"
+    "start": "node server.ts",
+    "dev": "node --watch-path=public --watch server.ts"
   },
   "dependencies": {
     "@otterseal/rest-api": "workspace:*",
     "cors": "catalog:",
     "express": "catalog:",
-    "tsx": "catalog:",
     "ws": "catalog:"
   },
   "devDependencies": {

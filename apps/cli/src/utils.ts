@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { loadConfig } from './config.js';
+import { loadConfig } from './config.ts';
 
 export async function readStdin() {
   if (process.stdin.isTTY) {
@@ -31,10 +31,11 @@ export async function openEditor(defaultContent = '') {
   }
 }
 
+const MULTIPLIERS: Record<string, number> = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
 export function parseDuration(str: string) {
-  const match = str.match(/^(\d+)([smhd])$/);
-  if (!match) throw new Error(`Invalid duration: ${str}. Use format like "1h", "30m", "1d"`);
+  const match = str.match(/^(\d+)([smhd])$/) ?? [];
   const [, num, unit] = match;
-  const multipliers: Record<string, number> = { s: 1000, m: 60000, h: 3600000, d: 86400000 };
-  return parseInt(num, 10) * multipliers[unit];
+  if (!num || !unit || !MULTIPLIERS[unit])
+    throw new Error(`Invalid duration: ${str}. Use format like "1h", "30m", "1d"`);
+  return parseInt(num, 10) * MULTIPLIERS[unit];
 }

@@ -22,6 +22,8 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
   return (
     <>
       {/* Overlay - only on mobile */}
+      {/** biome-ignore lint/a11y/noStaticElementInteractions: overlay */}
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: overlay */}
       <div
         className={clsx(
           'fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300 lg:hidden',
@@ -48,6 +50,7 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
             <span>OtterSeal</span>
           </Link>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden"
           >
@@ -110,6 +113,7 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
               </h3>
               {starred.length > 0 && (
                 <button
+                  type="button"
                   onClick={() => {
                     if (window.confirm('Are you sure you want to clear all starred pages?')) {
                       onClearStarred();

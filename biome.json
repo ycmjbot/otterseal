@@ -51,7 +51,7 @@
   },
   "css": {
     "parser": {
-      "cssModules": true
+      "tailwindDirectives": true
     }
   },
   "files": {
@@ -61,8 +61,7 @@
       "!**/dist/*",
       "!**/node_modules/*",
       "!**/*.generated.*",
-      "!**/*.gen.*",
-      "!**/*.css"
+      "!**/*.gen.*"
     ]
   }
 }

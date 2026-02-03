@@ -15,7 +15,7 @@ export type {
   WSInitMessage,
   WSMessage,
   WSUpdateMessage,
-} from './schemas.js';
+} from './schemas.ts';
 
 /**
  * WebSocket client interface for managing connections
@@ -45,4 +45,4 @@ export interface NoteDatabase {
 }
 
 // Re-import for types only
-import type { Note, NoteMetadata } from './schemas.js';
+import type { Note, NoteMetadata } from './schemas.ts';

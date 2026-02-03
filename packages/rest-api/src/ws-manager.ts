@@ -1,4 +1,4 @@
-import type { NoteDatabase, WSMessage, WSUpdateMessage } from './types.js';
+import type { NoteDatabase, WSMessage, WSUpdateMessage } from './types.ts';
 
 const MAX_ID_LENGTH = 64;
 const MAX_CONTENT_LENGTH = 100 * 1024;

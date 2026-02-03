@@ -32,10 +32,10 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "tsx src/index.ts",
-    "build": "tsc",
+    "dev": "node --watch src/index.ts",
+    "build": "pkgroll --cwd .",
     "test": "vitest run",
-    "prepack": "tsc",
+    "prepack": "pnpm -s build",
     "start": "node dist/index.js"
   },
   "dependencies": {
@@ -43,11 +43,11 @@
     "@stricli/core": "catalog:"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "tsx": "catalog:",
+    "pkgroll": "catalog:",
     "typescript": "catalog:"
   }
 }

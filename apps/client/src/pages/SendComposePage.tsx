@@ -1,6 +1,6 @@
 import { deriveKey, encryptNote, hashTitle } from '@otterseal/core';
 import { Clock, Flame, Loader2, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 
@@ -56,14 +56,20 @@ export default function SendComposePage() {
     }
   };
 
+  const [messageTextareaId, expireSelectId, selfDestructButtonId] = [useId(), useId(), useId()];
+
   return (
     <Layout maxWidth="max-w-2xl">
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor={messageTextareaId}
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Secret Message
           </label>
           <textarea
+            id={messageTextareaId}
             value={message}
             onChange={e => setMessage(e.target.value)}
             placeholder="Type your secret message here..."
@@ -77,11 +83,15 @@ export default function SendComposePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor={expireSelectId}
+              className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               <Clock className="w-4 h-4" />
               Expires After
             </label>
             <select
+              id={expireSelectId}
               value={expiryValue ?? ''}
               onChange={e => setExpiryValue(e.target.value ? Number(e.target.value) : null)}
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-ring transition-colors"
@@ -95,11 +105,15 @@ export default function SendComposePage() {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor={selfDestructButtonId}
+              className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               <Flame className="w-4 h-4" />
               Self-Destruct
             </label>
             <button
+              id={selfDestructButtonId}
               type="button"
               onClick={() => setBurnAfterReading(!burnAfterReading)}
               className={`w-full px-4 py-3 border-2 rounded-xl font-medium transition-all ${
@@ -120,6 +134,7 @@ export default function SendComposePage() {
         )}
 
         <button
+          type="button"
           onClick={handleCreate}
           disabled={!message.trim() || isCreating}
           className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-primary hover:bg-primary/90 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-primary-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed"

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { NoteDatabase, WSClient } from './types.js';
-import { WSManager } from './ws-manager.js';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import type { NoteDatabase, WSClient } from './types.ts';
+import { WSManager } from './ws-manager.ts';
 
 /**
  * Mock database for testing
@@ -88,7 +88,7 @@ class MockWSClient implements WSClient {
 describe('WSManager', () => {
   let db: MockDatabase;
   let manager: WSManager;
-  let logger: ReturnType<typeof vi.fn>;
+  let logger: Mock<(msg: string) => void>;
 
   beforeEach(() => {
     db = new MockDatabase();

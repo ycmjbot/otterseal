@@ -1,8 +1,10 @@
+import type { ExclusifyUnion } from 'type-fest';
+import z from 'zod';
 import {
   CreateNoteRequestSchema,
   GetNoteMetadataResponseSchema,
   GetNoteResponseSchema,
-} from './schemas.js';
+} from './schemas.ts';
 import type {
   CreateNoteResponse,
   ErrorResponse,
@@ -10,7 +12,7 @@ import type {
   GetNoteResponse,
   NoteDatabase,
   NoteMetadata,
-} from './types.js';
+} from './types.ts';
 
 const MAX_ID_LENGTH = 64;
 
@@ -38,7 +40,9 @@ export type GetNoteHandler = (
 export type CreateNoteHandler = (
   id: string,
   body: unknown,
-) => Promise<CreateNoteResponse | ErrorResponse | { error: string; status: number }>;
+) => Promise<
+  ExclusifyUnion<CreateNoteResponse | ErrorResponse | { error: string; status: number }>
+>;
 
 /**
  * Create REST API handlers for a given database
@@ -104,8 +108,7 @@ export function createAPIHandlers(context: APIHandlerContext) {
     // Parse and validate request body with Zod
     const parseResult = CreateNoteRequestSchema.safeParse(body);
     if (!parseResult.success) {
-      const errors = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`);
-      return { error: `Validation failed: ${errors.join(', ')}`, status: 400 };
+      return { error: `Validation failed:\n${z.prettifyError(parseResult.error)}`, status: 400 };
     }
 
     const { content, expiresAt, burnAfterReading } = parseResult.data;

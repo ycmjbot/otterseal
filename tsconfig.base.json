@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "noEmit": true,
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -14,9 +14,14 @@
     "noUncheckedSideEffectImports": true,
     "noFallthroughCasesInSwitch": true,
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false,
+    "isolatedModules": true,
+    "noImplicitAny": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "types": [],
-    "composite": true
+    "composite": true,
+    "customConditions": ["dev-types"]
   }
 }

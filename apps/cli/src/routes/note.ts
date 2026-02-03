@@ -1,7 +1,7 @@
 import { decryptNote, deriveKey, encryptNote, hashTitle } from '@otterseal/core';
 import { buildCommand, buildRouteMap } from '@stricli/core';
-import { getServerUrl } from '../config.js';
-import { openEditor, readStdin } from '../utils.js';
+import { getServerUrl } from '../config.ts';
+import { openEditor, readStdin } from '../utils.ts';
 
 // READ COMMAND
 async function readNote(flags: { readonly title: string }) {

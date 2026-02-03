@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   title: 'OtterSeal',
@@ -7,15 +7,15 @@ export default defineConfig({
 
   markdown: {
     config(md) {
-      const defaultFence = md.renderer.rules.fence
+      const defaultFence = md.renderer.rules.fence;
       md.renderer.rules.fence = (tokens, idx, _options, env, self) => {
-        const token = tokens[idx]
+        const token = tokens[idx];
         if (token.info === 'mermaid') {
-          return `<div class="mermaid">${md.utils.escapeHtml(token.content)}</div>\n`
+          return `<div class="mermaid">${md.utils.escapeHtml(token.content)}</div>\n`;
         }
-        return defaultFence?.(tokens, idx, _options, env, self) || ''
-      }
-    }
+        return defaultFence?.(tokens, idx, _options, env, self) || '';
+      };
+    },
   },
 
   themeConfig: {

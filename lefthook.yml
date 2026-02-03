@@ -1,5 +1,6 @@
 pre-commit:
   jobs:
-    - run: pnpm lint:fix
+    - run: pnpm repojj:check
+    - run: pnpm check:fix
       stage_fixed: true
     - run: pnpm typecheck

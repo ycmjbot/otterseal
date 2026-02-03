@@ -2,5 +2,6 @@
   "name": "otterseal-docs",
   "type": "static",
   "description": "🦦 OtterSeal Documentation",
-  "domain": "docs.otterseal.ycmj.bot"
+  "domain": "docs.otterseal.ycmj.bot",
+  "root": ".vitepress/dist"
 }

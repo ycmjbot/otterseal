@@ -134,6 +134,7 @@ export default function AboutPage() {
 
         <div className="not-prose my-6">
           <button
+            type="button"
             onClick={() => navigate('/send')}
             className="inline-flex items-center gap-2 px-4 md:px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-all text-sm md:text-base w-full md:w-auto justify-center"
           >

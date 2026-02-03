@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decryptNote, deriveKey, encryptNote, hashTitle } from './index.js';
+import { decryptNote, deriveKey, encryptNote, hashTitle } from './index.ts';
 
 describe('Core Crypto Functions', () => {
   describe('hashTitle', () => {

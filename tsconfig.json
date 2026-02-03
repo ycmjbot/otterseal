@@ -1,5 +1,11 @@
 {
   "extends": "./tsconfig.base.json",
   "files": [],
-  "references": [{ "path": "./packages/core" }, { "path": "./apps/server" }]
+  "references": [
+    { "path": "./packages/rest-api" },
+    { "path": "./packages/core" },
+    { "path": "./apps/server" },
+    { "path": "./apps/client" },
+    { "path": "./apps/cli" }
+  ]
 }

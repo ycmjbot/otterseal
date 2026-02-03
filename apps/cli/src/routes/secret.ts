@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 import { decryptNote, deriveKey, encryptNote, hashTitle } from '@otterseal/core';
 import { buildCommand, buildRouteMap } from '@stricli/core';
-import { getServerUrl } from '../config.js';
-import { openEditor, parseDuration, readStdin } from '../utils.js';
+import { getServerUrl } from '../config.ts';
+import { openEditor, parseDuration, readStdin } from '../utils.ts';
 
 // SEND COMMAND
 async function sendSecret(flags: {

@@ -145,12 +145,12 @@ app.post('/api/notes/:id', async (req: Request, res: Response) => {
   const id = String(req.params.id);
 
   const result = await apiHandlers.createNote(id, req.body);
-
-  if ('status' in result) {
-    res.status(result.status).json(result);
-  } else {
+  if (result.status === undefined) {
     res.json(result);
+    return;
   }
+
+  res.status(result.status).json(result);
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -208,7 +208,7 @@ wss.on('connection', async (ws: ExtendedWebSocket, req) => {
   });
 });
 
-app.get('*', (_req: Request, res: Response) => {
+app.get('/{*any}', (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

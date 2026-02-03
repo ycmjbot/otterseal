@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Check, Loader2, Moon, Star, Sun, WifiOff } from 'lucide-react';
+import { Check, ListIcon, Loader2, Moon, Star, Sun, WifiOff } from 'lucide-react';
 import type React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -96,23 +96,12 @@ export default function Header({
     <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="flex items-center gap-3 min-w-0">
         <button
+          type="button"
           onClick={onOpenSidebar}
           className="p-2 -ml-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors lg:hidden"
         >
           <span className="sr-only">Menu</span>
-          <svg
-            className="w-5 h-5 text-gray-600 dark:text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          <ListIcon />
         </button>
 
         {leftActions}
@@ -136,6 +125,7 @@ export default function Header({
             />
             {showStar && (
               <button
+                type="button"
                 onClick={() => onToggleStar(currentTitle)}
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
@@ -164,6 +154,7 @@ export default function Header({
 
       <div className="flex items-center gap-2">
         <button
+          type="button"
           onClick={onToggleTheme}
           className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           aria-label="Toggle theme"

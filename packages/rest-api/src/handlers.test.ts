@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createAPIHandlers } from './handlers.js';
-import type { NoteDatabase } from './types.js';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { createAPIHandlers } from './handlers.ts';
+import type { NoteDatabase } from './types.ts';
 
 /**
  * Mock database implementation for testing
@@ -68,7 +68,7 @@ class MockDatabase implements NoteDatabase {
 describe('REST API Handlers', () => {
   let db: MockDatabase;
   let handlers: ReturnType<typeof createAPIHandlers>;
-  let logger: ReturnType<typeof vi.fn>;
+  let logger: Mock<(msg: string) => void>;
 
   beforeEach(() => {
     db = new MockDatabase();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseDuration } from './utils.js';
+import { parseDuration } from './utils.ts';
 
 describe('utils.ts', () => {
   describe('parseDuration', () => {

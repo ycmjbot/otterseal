@@ -175,6 +175,7 @@ export default function SendViewPage() {
             </div>
 
             <button
+              type="button"
               onClick={handleOpen}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-colors"
             >
@@ -195,6 +196,7 @@ export default function SendViewPage() {
                 {content}
               </div>
               <button
+                type="button"
                 onClick={handleCopyContent}
                 className="absolute top-3 right-3 p-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
               >
@@ -253,6 +255,7 @@ export default function SendViewPage() {
               We couldn't load the message. Please try again later.
             </p>
             <button
+              type="button"
               onClick={() => window.location.reload()}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-xl transition-colors"
             >
@@ -277,6 +280,7 @@ export default function SendViewPage() {
                   onClick={e => (e.target as HTMLInputElement).select()}
                 />
                 <button
+                  type="button"
                   onClick={handleCopyLink}
                   className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
                 >
@@ -284,6 +288,7 @@ export default function SendViewPage() {
                 </button>
                 {typeof navigator.share === 'function' && (
                   <button
+                    type="button"
                     onClick={handleShare}
                     className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
                   >

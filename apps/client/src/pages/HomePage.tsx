@@ -71,6 +71,7 @@ export default function HomePage() {
 
         <div className="pt-2">
           <button
+            type="button"
             onClick={() => navigate('/send')}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-teal-500 hover:from-primary/90 hover:to-teal-500/90 text-primary-foreground font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
           >

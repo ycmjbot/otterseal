@@ -45,21 +45,27 @@ const encrypted = await encryptNote('secret content', key)
 
 ## Architecture
 
-```mermaid
-graph TD
-    A["🌐 Client<br/>(Browser/CLI)"]
-    B["@otterseal/core<br/>Web Crypto API<br/>HKDF • AES-256-GCM"]
-    C["REST API<br/>(WebSockets)"]
-    D["Database<br/>(Encrypted)"]
-    
-    A --> B
-    B -->|Encrypted Data| C
-    C --> D
-    
-    style A fill:#0d9488,stroke:#0f766e,stroke-width:2px,color:#fff
-    style B fill:#14b8a6,stroke:#0d9488,stroke-width:2px,color:#fff
-    style C fill:#2dd4bf,stroke:#14b8a6,stroke-width:2px,color:#000
-    style D fill:#f0fdfa,stroke:#0d9488,stroke-width:2px,color:#0d9488
+
+```
+┌───────────────────────────┐
+│   Client (Browser/CLI)    │
+├───────────────────────────┤
+│ @otterseal/core           │
+│ • Web Crypto API          │
+│ • HKDF key derivation     │
+│ • AES-256-GCM encryption  │
+└────────────┬──────────────┘
+             │ (encrypted)
+             ↓
+      ┌──────────────┐
+      │  REST API /  │
+      │  WebSockets  │
+      └──────┬───────┘
+             │
+      ┌──────────────┐
+      │   Database   │
+      │ (encrypted)  │
+      └──────────────┘
 ```
 
 ## Security First

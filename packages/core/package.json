@@ -20,22 +20,20 @@
   ],
   "author": "JBot",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "dev-types": "./src/index.ts"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "dev": "echo 'Core module ready'",
     "build": "pkgroll --cwd .",
     "test": "vitest run"
   },
