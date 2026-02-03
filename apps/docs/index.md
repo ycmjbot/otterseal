@@ -78,6 +78,10 @@ const encrypted = await encryptNote('secret content', key)
 - ✅ **HashRouter Security** — Secret links use URL fragments (`/#/send/...`) so keys/UUIDs are never sent to the server
 - ✅ **Open source** — Audit the code yourself
 
+## Credits & Inspiration
+
+OtterSeal was inspired by the simplicity of [publicnote.com](https://github.com/routman/publicnote.com), aimed at bringing that same ease-of-use to a zero-knowledge encrypted environment.
+
 ## Packages
 
 ::: tip

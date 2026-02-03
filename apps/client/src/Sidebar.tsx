@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { BookOpen, Github, Home, Send, X } from 'lucide-react';
+import { BookOpen, Home, Send, X } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 interface StarredNote {
@@ -93,15 +93,6 @@ export default function Sidebar({ isOpen, onClose, starred, onClearStarred }: Si
             >
               <BookOpen className="w-4 h-4" />
               Documentation
-            </a>
-            <a
-              href="https://github.com/routman/publicnote.com"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <Github className="w-4 h-4" />
-              Inspiration
             </a>
           </div>
 
