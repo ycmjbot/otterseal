@@ -32,7 +32,7 @@ export default function SendViewPage() {
   const [linkCopied, setLinkCopied] = useState(false);
 
   const title = `/send/${uuid}`;
-  const shareUrl = `${window.location.origin}/send/${uuid}`;
+  const shareUrl = `${window.location.origin}/#/send/${uuid}`;
 
   useEffect(() => {
     async function loadMetadata() {
