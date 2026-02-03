@@ -4,7 +4,7 @@ A secure, zero-knowledge, real-time sync notepad. Write notes that are encrypted
 
 ## Features
 
-- **Zero-Knowledge Encryption**: Your notes are encrypted with AES-256-GCM using a key derived from the title. The server never sees the key.
+- **Zero-Knowledge Encryption**: Your notes are encrypted with AES-256-GCM using a key derived from the title. The server never sees the key. Secret links use URL fragments (`/#/send/...`) so the key material is never sent to the server.
 - **Real-Time Sync**: Collaborate on notes in real-time across multiple devices using WebSockets.
 - **Send Secrets**: Create one-time links that self-destruct after reading (or after a set time).
 - **Offline Capable**: Works even if you disconnect briefly.

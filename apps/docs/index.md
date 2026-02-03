@@ -75,6 +75,7 @@ const encrypted = await encryptNote('secret content', key)
 - ✅ **AES-256-GCM** — Industry-standard authenticated encryption
 - ✅ **HKDF** — Cryptographic key derivation with domain separation
 - ✅ **No passwords** — Titles are used directly (more convenient, same security)
+- ✅ **HashRouter Security** — Secret links use URL fragments (`/#/send/...`) so keys/UUIDs are never sent to the server
 - ✅ **Open source** — Audit the code yourself
 
 ## Packages
