@@ -3,18 +3,17 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "dev-types": "./src/index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      }
+    }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "pkgroll --cwd=.",
     "test": "vitest run"

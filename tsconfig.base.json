@@ -21,7 +21,6 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "types": [],
-    "composite": true,
-    "customConditions": ["dev-types"]
+    "composite": true
   }
 }

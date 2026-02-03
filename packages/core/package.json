@@ -20,18 +20,17 @@
   ],
   "author": "JBot",
   "type": "module",
-  "files": [
-    "dist"
-  ],
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "dev-types": "./src/index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      }
+    }
   },
   "scripts": {
     "build": "pkgroll --cwd .",
