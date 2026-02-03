@@ -21,18 +21,16 @@
   "author": "JBot",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "otterseal-for-typechecking": "./src/index.ts"
+    }
   },
   "publishConfig": {
     "access": "public",
     "provenance": true,
-    "registry": "https://registry.npmjs.org",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "types": "./dist/index.d.ts"
-      }
-    }
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "build": "pkgroll --cwd .",
