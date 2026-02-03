@@ -89,29 +89,29 @@ export default function AboutPage() {
         <div className="not-prose bg-gray-100 dark:bg-gray-800 rounded-xl p-4 md:p-5 my-5 -mx-2 md:mx-0">
           <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 text-sm md:text-base">
             <EyeOff className="w-4 h-4 text-primary flex-shrink-0" />
-            The URL Contains the Key
+            True Zero-Knowledge URLs
           </h4>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-            When you create a secret, the decryption key is embedded directly in the URL fragment
-            (the part after <code className="break-all">#</code>):
+            OtterSeal uses hash-based routing. Everything after the <code>#</code> stays in your
+            browser and is <strong>never sent to the server</strong>:
           </p>
           <div className="bg-gray-900 text-gray-100 p-3 rounded-lg mb-3 overflow-hidden">
             <code className="text-xs block break-all">
-              {`${window.location.origin}/s/abc123#encryption-key-here`}
+              {`${window.location.origin}/#/send/abc123`}
             </code>
           </div>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
             <li className="flex gap-2 items-start">
               <Server className="w-4 h-4 flex-shrink-0 text-gray-500 mt-0.5" />
               <span className="min-w-0 break-words">
-                The server sees <code>/s/abc123</code> — just a lookup ID
+                The server only sees <code>{window.location.origin}/</code> — the root path
               </span>
             </li>
             <li className="flex gap-2 items-start">
               <Shield className="w-4 h-4 flex-shrink-0 text-green-500 mt-0.5" />
               <span className="min-w-0 break-words">
-                The <code className="break-all">#encryption-key-here</code> never leaves your
-                browser — it's not sent to any server
+                The <code className="break-all">#/send/abc123</code> (including the secret ID) never
+                leaves your browser
               </span>
             </li>
           </ul>
