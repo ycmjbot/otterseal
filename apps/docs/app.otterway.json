@@ -3,5 +3,6 @@
   "type": "static",
   "description": "🦦 OtterSeal Documentation",
   "domain": "docs.otterseal.ycmj.bot",
-  "root": ".vitepress/dist"
+  "root": ".vitepress/dist",
+  "cleanUrl": true
 }

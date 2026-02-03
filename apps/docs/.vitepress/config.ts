@@ -4,6 +4,7 @@ export default defineConfig({
   title: 'OtterSeal',
   description: '🦦 Zero-knowledge encrypted notes and secrets',
   appearance: 'dark',
+  cleanUrls: true,
 
   themeConfig: {
     logo: '/otterseal-logo.png',
