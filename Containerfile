@@ -13,6 +13,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY apps/client/package.json ./apps/client/
 COPY apps/server/package.json ./apps/server/
 COPY packages/core/package.json ./packages/core/
+COPY packages/rest-api/package.json ./packages/rest-api/
 
 # Install dependencies
 RUN CI=true pnpm install --frozen-lockfile
