@@ -28,8 +28,14 @@ export default function NotePage({ onStatusChange }: NotePageProps) {
     return () => onStatusChange?.(null);
   }, [status, onStatusChange]);
 
+  const isFirstRender = useRef(true);
+
   // Debounce title changes for WebSocket connection
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     const timer = setTimeout(() => setDebouncedTitle(rawTitle), 300);
     return () => clearTimeout(timer);
   }, [rawTitle]);
